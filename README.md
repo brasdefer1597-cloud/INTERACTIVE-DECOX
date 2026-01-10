@@ -1,133 +1,133 @@
-# Chalamandra Magistral: Cognitive Operating System for the Elite 1%
+# Chalamandra Magistral: Sistema Operativo Cognitivo
 
 ![Chalamandra Banner](https://via.placeholder.com/1200x400?text=Chalamandra+Magistral+System+OS)
 
-> **Strategic Note:** This repository hosts the source code for the "Chalamandra Magistral" platform. It is designed as a scalable, component-based React application that decodes cognitive archetypes and delivers elite mental hacking protocols.
+> **Nota Estratégica:** Este repositorio aloja el código fuente de la plataforma "Chalamandra Magistral". Está diseñado como una aplicación React escalable basada en componentes que decodifica arquetipos cognitivos y entrega protocolos de hacking mental de élite.
 
-## 🚀 Overview
+## 🚀 Visión General
 
-Chalamandra Magistral is more than a web app; it's a **cognitive operating system**. Users engage in a deep psychological quiz to determine their archetype (Architect, Alchemist, Explorer), unlocking a personalized dashboard of "Hacks" (mental models), tactical grimoires, and AI-powered strategic directives.
+Chalamandra Magistral es más que una aplicación web; es un **sistema operativo cognitivo**. Los usuarios participan en un test psicológico profundo para determinar su arquetipo (Arquitecto, Alquimista, Explorador), desbloqueando un tablero personalizado de "Hacks" (modelos mentales), grimorios tácticos y directivas estratégicas impulsadas por IA.
 
-### Key Features
-- **Archetype Decoding Engine:** Interactive quiz with complex scoring logic.
-- **Dynamic Dashboard:** Personalized content delivery based on user archetype.
-- **AI Oracle:** Integration with Google Gemini for real-time strategic advice.
-- **Tactical Audio:** Immersive soundscapes using Tone.js for "SRAP" rituals.
-- **Dual Mode Experience:** "Demo" vs. "Full" experience toggle for conversion optimization.
+### Características Clave
+- **Motor de Decodificación de Arquetipos:** Cuestionario interactivo con lógica de puntuación compleja.
+- **Tablero Dinámico:** Entrega de contenido personalizado basado en el arquetipo del usuario.
+- **Oráculo IA:** Integración con Google Gemini para asesoramiento estratégico en tiempo real.
+- **Audio Táctico:** Paisajes sonoros inmersivos usando Tone.js para rituales "SRAP".
+- **Experiencia Dual:** Cambio entre modo "Demo" y "Full" para optimización de conversiones.
 
-## 🛠 Tech Stack
+## 🛠 Tecnologías
 
-- **Core:** React 18, TypeScript, Vite
-- **Styling:** Tailwind CSS (Utility-first, scalable design system)
-- **AI Integration:** Google GenAI SDK (Gemini Models)
-- **Audio Synthesis:** Tone.js (Real-time procedural audio)
-- **State Management:** React Context API + Custom Hooks
-- **Icons:** FontAwesome
+- **Núcleo:** React 18, TypeScript, Vite
+- **Estilos:** Tailwind CSS (Sistema de diseño utilitario y escalable)
+- **Integración IA:** Google GenAI SDK (Modelos Gemini)
+- **Síntesis de Audio:** Tone.js (Audio procedural en tiempo real)
+- **Gestión de Estado:** React Context API + Custom Hooks
+- **Iconos:** FontAwesome
 
-## 🏗 Architecture & Flow
+## 🏗 Arquitectura y Flujo
 
-The application follows a modular, feature-based architecture within `src/` to ensure maintainability and scalability.
+La aplicación sigue una arquitectura modular basada en características dentro de `src/` para asegurar mantenibilidad y escalabilidad.
 
 ```mermaid
 graph TD
-    User[User / Client] -->|Visit| Entry(index.html / main.tsx)
+    User[Usuario / Cliente] -->|Visita| Entry(index.html / main.tsx)
     Entry --> App{App.tsx}
 
-    subgraph "Context Layer"
+    subgraph "Capa de Contexto"
         App --> Provider[AppContextProvider]
-        Provider --> State[Global State: Hacks, Audio, Archetype]
+        Provider --> State[Estado Global: Hacks, Audio, Arquetipo]
     end
 
-    subgraph "Layout & Routing"
-        App -->|Mode Check| Router{Mode Switcher}
-        Router -->|?mode=demo| Demo[DemoExperience]
-        Router -->|Default| Full[FullExperience]
+    subgraph "Layout y Enrutamiento"
+        App -->|Verificación de Modo| Router{Selector de Modo}
+        Router -->|?mode=demo| Demo[Experiencia Demo]
+        Router -->|Por Defecto| Full[Experiencia Full]
     end
 
-    subgraph "Core Components"
+    subgraph "Componentes Principales"
         Demo & Full --> Header
         Demo & Full --> Quiz[ArchetypeQuiz]
         Demo & Full --> Dashboard[ArchitectDashboard]
-        Demo & Full --> Hacks[HacksSection]
-        Full --> Advanced[Grimorio, Oraculo, RPG Kit]
+        Demo & Full --> Hacks[Sección Hacks]
+        Full --> Advanced[Grimorio, Oráculo, Kit RPG]
     end
 
-    subgraph "Services"
-        Dashboard -->|Request Directive| Gemini[Gemini Service]
-        Advanced -->|Request Combo| Gemini
+    subgraph "Servicios"
+        Dashboard -->|Solicitar Directiva| Gemini[Servicio Gemini]
+        Advanced -->|Solicitar Combo| Gemini
     end
 
-    subgraph "Modals"
+    subgraph "Modales"
         App --> Modal[ModalManager]
-        Modal --> Details[Hack Details]
-        Modal --> Services[Premium Services]
+        Modal --> Details[Detalle de Hack]
+        Modal --> Services[Servicios Premium]
     end
 ```
 
-## ⚡ Performance & UX Strategy
+## ⚡ Estrategia de Rendimiento y UX
 
-- **Lazy Loading:** Modal content is loaded on demand to keep the initial bundle light.
-- **Audio Context Management:** Audio context is initialized only after user interaction to comply with browser autoplay policies.
-- **Optimized Assets:** Centralized CSS and minimal external dependencies ensure fast FCP (First Contentful Paint).
-- **Responsive Design:** Mobile-first approach using Tailwind's responsive modifiers.
+- **Carga Diferida (Lazy Loading):** El contenido de los modales se carga bajo demanda para mantener ligero el paquete inicial.
+- **Gestión del Contexto de Audio:** El contexto de audio se inicializa solo después de la interacción del usuario para cumplir con las políticas de reproducción automática del navegador.
+- **Activos Optimizados:** CSS centralizado y dependencias externas mínimas aseguran un FCP (First Contentful Paint) rápido.
+- **Diseño Responsivo:** Enfoque Mobile-first utilizando los modificadores responsivos de Tailwind.
 
-## 🛡 Security & Scalability
+## 🛡 Seguridad y Escalabilidad
 
-- **Environment Variables:** API Keys are strictly managed via `.env` files (see `.env.example`). **NEVER commit keys to the repo.**
-- **Input Sanitization:** Although client-side, inputs for the AI prompts are constructed via template literals in controlled service functions to minimize injection risks.
-- **Modular Codebase:** The separation of `layout`, `components`, `services`, and `context` allows for easy addition of new features (e.g., new archetypes or hacks) without refactoring the core logic.
+- **Variables de Entorno:** Las claves API se gestionan estrictamente a través de archivos `.env` (ver `.env.example`). **NUNCA cometer claves al repositorio.**
+- **Sanitización de Entradas:** Aunque es del lado del cliente, las entradas para los prompts de IA se construyen mediante plantillas literales en funciones de servicio controladas para minimizar riesgos de inyección.
+- **Código Modular:** La separación de `layout`, `components`, `services` y `context` permite añadir fácilmente nuevas características (ej. nuevos arquetipos o hacks) sin refactorizar la lógica central.
 
-## 🚀 Installation & Deploy
+## 🚀 Instalación y Despliegue
 
-### Prerequisites
+### Prerrequisitos
 - Node.js v18+
-- npm or yarn
+- npm o yarn
 
-### Local Development
+### Desarrollo Local
 
-1.  **Clone the Repository:**
+1.  **Clonar el Repositorio:**
     ```bash
-    git clone https://github.com/your-org/chalamandra-magistral.git
+    git clone https://github.com/tu-org/chalamandra-magistral.git
     cd chalamandra-magistral
     ```
 
-2.  **Install Dependencies:**
+2.  **Instalar Dependencias:**
     ```bash
     npm install
     ```
 
-3.  **Configure Environment:**
-    Create a `.env` file in the root:
+3.  **Configurar Entorno:**
+    Crea un archivo `.env` en la raíz:
     ```env
-    VITE_GEMINI_API_KEY=your_gemini_api_key_here
+    VITE_GEMINI_API_KEY=tu_clave_api_gemini_aqui
     ```
 
-4.  **Run Development Server:**
+4.  **Ejecutar Servidor de Desarrollo:**
     ```bash
     npm run dev
     ```
-    Access the app at `http://localhost:5173`.
+    Accede a la app en `http://localhost:5173`.
 
-### Deployment (Vercel/Netlify)
+### Despliegue (Vercel/Netlify)
 
-This project is Vite-based and deploys seamlessly to edge platforms.
+Este proyecto está basado en Vite y se despliega perfectamente en plataformas edge.
 
-1.  **Build Command:** `npm run build`
-2.  **Output Directory:** `dist`
-3.  **Environment Variables:** Add `VITE_GEMINI_API_KEY` to your project settings in the dashboard.
+1.  **Comando de Build:** `npm run build`
+2.  **Directorio de Salida:** `dist`
+3.  **Variables de Entorno:** Añade `VITE_GEMINI_API_KEY` a la configuración de tu proyecto en el dashboard.
 
-## 🧪 Testing
+## 🧪 Pruebas
 
-Currently, the project relies on manual verification.
-- **Unit Tests:** Future roadmap includes Vitest for `utils` and `services`.
-- **E2E:** Playwright tests are recommended for critical flows (Quiz completion, Payment modal).
+Actualmente, el proyecto confía en verificación manual.
+- **Tests Unitarios:** Roadmap futuro incluye Vitest para `utils` y `services`.
+- **E2E:** Se recomiendan pruebas Playwright para flujos críticos (Completar Quiz, Modal de Pago).
 
-## 🔮 Strategic Vision (Senior Engineer Notes)
+## 🔮 Visión Estratégica (Notas del Ingeniero Senior)
 
-1.  **Micro-Frontend Potential:** As the "Hacks" library grows, considering splitting the "Dashboard" and the "Public Site" into separate builds could improve performance.
-2.  **Server-Side Rendering (SSR):** Migrating to Next.js or Remix in the future would improve SEO for the content-heavy sections (Hacks descriptions, Blog).
-3.  **Gamification Engine:** The current state is local. Moving `completedHacks` to a backend (Supabase/Firebase) would allow for persistent user profiles and cross-device synchronization.
+1.  **Potencial Micro-Frontend:** A medida que crece la biblioteca de "Hacks", considerar separar el "Dashboard" y el "Sitio Público" en builds separados podría mejorar el rendimiento.
+2.  **Server-Side Rendering (SSR):** Migrar a Next.js o Remix en el futuro mejoraría el SEO para las secciones densas en contenido (Descripciones de Hacks, Blog).
+3.  **Motor de Gamificación:** El estado actual es local. Mover `completedHacks` a un backend (Supabase/Firebase) permitiría perfiles de usuario persistentes y sincronización entre dispositivos.
 
 ---
 
-*“The only limit to your reality is the architecture of your mind.”* - Chalamandra Protocol
+*“El único límite para tu realidad es la arquitectura de tu mente.”* - Protocolo Chalamandra
