@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { AppProvider } from './context/AppContext';
+import { Analytics } from '@vercel/analytics/react';
 
 // Lazy load experiences for better initial load performance
 const FullExperience = lazy(() => import('./layout/FullExperience'));
@@ -23,6 +24,7 @@ const App = () => {
             }>
                 {mode === 'full' ? <FullExperience /> : <DemoExperience />}
             </Suspense>
+            <Analytics />
         </AppProvider>
     );
 };
