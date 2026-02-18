@@ -28,6 +28,18 @@
 <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="chalamandramagistral" data-color="#5F7FFF" data-emoji="☕"  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+      window.addEventListener('load', function () {
+        if (typeof kofiWidgetOverlay !== 'undefined') {
+          kofiWidgetOverlay.draw('chalamandramagistral', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Soporta el Proyecto',
+            'floating-chat.donateButton.background-color': '#5F7FFF',
+            'floating-chat.donateButton.text-color': '#fff'
+          });
+        }
+      });
+    </script>
 </body>
 </html>
