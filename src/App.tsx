@@ -1,24 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { AppProvider } from './context/AppContext';
-import FullExperience from './layout/FullExperience';
-import DemoExperience from './layout/DemoExperience';
+
+// Lazy load experiences for better initial load performance
+const FullExperience = lazy(() => import('./layout/FullExperience'));
+const DemoExperience = lazy(() => import('./layout/DemoExperience'));
 
 const App = () => {
-    const [mode, setMode] = useState<'full' | 'demo'>('full');
-
-    useEffect(() => {
+    // Optimized initialization: Check URL param before first render to avoid loading unnecessary chunks
+    const [mode] = useState<'full' | 'demo'>(() => {
         const params = new URLSearchParams(window.location.search);
-        const modeParam = params.get('mode');
-        if (modeParam === 'demo') {
-            setMode('demo');
-        } else {
-            setMode('full');
-        }
-    }, []);
+        return params.get('mode') === 'demo' ? 'demo' : 'full';
+    });
 
     return (
         <AppProvider>
-            {mode === 'full' ? <FullExperience /> : <DemoExperience />}
+            <Suspense fallback={
+                <div className="flex items-center justify-center min-h-screen bg-black text-yellow-500">
+                    <div className="text-2xl font-bold animate-pulse">
+                        <i className="fa-solid fa-bolt mr-2"></i> Cargando experiencia...
+                    </div>
+                </div>
+            }>
+                {mode === 'full' ? <FullExperience /> : <DemoExperience />}
+            </Suspense>
         </AppProvider>
     );
 };
