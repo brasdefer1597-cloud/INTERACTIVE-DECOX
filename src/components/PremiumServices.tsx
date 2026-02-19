@@ -45,4 +45,4 @@ const PremiumServices: React.FC<PremiumServicesProps> = ({ onServiceClick, playU
     );
 };
 
-export default PremiumServices;
+export default React.memo(PremiumServices);

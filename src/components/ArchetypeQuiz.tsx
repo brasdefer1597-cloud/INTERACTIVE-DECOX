@@ -78,4 +78,4 @@ const ArchetypeQuiz: React.FC<ArchetypeQuizProps> = ({ onQuizComplete, playSelec
     );
 };
 
-export default ArchetypeQuiz;
+export default React.memo(ArchetypeQuiz);

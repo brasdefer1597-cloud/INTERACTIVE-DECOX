@@ -122,4 +122,4 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
     );
 };
 
-export default ArchitectDashboard;
+export default React.memo(ArchitectDashboard);

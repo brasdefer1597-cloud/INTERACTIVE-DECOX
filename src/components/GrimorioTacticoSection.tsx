@@ -173,4 +173,4 @@ const GrimorioTacticoSection: React.FC = () => {
     );
 };
 
-export default GrimorioTacticoSection;
+export default React.memo(GrimorioTacticoSection);

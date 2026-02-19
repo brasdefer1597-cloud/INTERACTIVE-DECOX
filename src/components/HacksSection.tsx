@@ -61,4 +61,4 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
     );
 };
 
-export default HacksSection;
+export default React.memo(HacksSection);
