@@ -172,7 +172,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('completedHacks', JSON.stringify(Array.from(newCompleted)));
     }, [completedHacks, playCompletionSound]);
 
-    const handleGenerateDirective = async () => {
+    const handleGenerateDirective = useCallback(async () => {
         if (isDirectiveLoading) return;
         playUIClick();
         setIsDirectiveLoading(true);
@@ -193,7 +193,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsDirectiveLoading(false);
         }
-    };
+    }, [isDirectiveLoading, completedHacks, dominantArchetype, playUIClick, playDirectiveSound]);
 
     const handleTemplateInputChange = useCallback((hackId: number, aspecto: string, value: string) => {
         setAllTemplateInputs(prev => {
@@ -209,10 +209,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
-    const showServiceModal = (serviceType: 'discovery' | 'magistral' | 'total') => {
+    const showServiceModal = useCallback((serviceType: 'discovery' | 'magistral' | 'total') => {
         playModalOpen();
         setModalState({ isOpen: true, type: serviceType, data: null });
-    };
+    }, [playModalOpen]);
 
     const showHackModal = useCallback((id: number) => {
         const hack = HACKS_DATA.find(h => h.id === id);
@@ -230,15 +230,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [playModalOpen]);
 
-    const showSrapModal = () => {
+    const showSrapModal = useCallback(() => {
         playModalOpen();
         setModalState({ isOpen: true, type: 'srap', data: null });
-    }
+    }, [playModalOpen]);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playModalClose();
         setModalState({ isOpen: false, type: null, data: null });
-    }
+    }, [playModalClose]);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -252,13 +252,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }, 500);
     }, [handleCelebration]);
 
-    const handleRetakeQuiz = () => {
+    const handleRetakeQuiz = useCallback(() => {
         playUIClick();
         setDominantArchetype(null);
         localStorage.removeItem('dominantArchetype');
         localStorage.removeItem('completedHacks'); // Also reset hacks if desired
         setCompletedHacks(new Set());
-    };
+    }, [playUIClick]);
 
     return (
         <AppContext.Provider value={{

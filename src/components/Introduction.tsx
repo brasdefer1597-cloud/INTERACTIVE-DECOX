@@ -14,4 +14,4 @@ const Introduction: React.FC = () => (
     </section>
 );
 
-export default Introduction;
+export default React.memo(Introduction);

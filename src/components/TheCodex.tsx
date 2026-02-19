@@ -111,4 +111,4 @@ const TheCodex: React.FC = () => {
     );
 };
 
-export default TheCodex;
+export default React.memo(TheCodex);

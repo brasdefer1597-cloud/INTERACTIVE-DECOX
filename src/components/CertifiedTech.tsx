@@ -29,4 +29,4 @@ const CertifiedTech = () => (
     </section>
 );
 
-export default CertifiedTech;
+export default React.memo(CertifiedTech);
