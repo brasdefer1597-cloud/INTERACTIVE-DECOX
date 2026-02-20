@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { HACKS_DATA, PODERES_SHEREZADE_DATA } from '../utils/constants';
 import { Hack, PoderDeSherezade } from '../utils/types';
-import PostPaymentPage from './PostPaymentPage';
-import DiscoverySessionPage from './DiscoverySessionPage';
-import KitMagistralSection from './KitMagistralSection';
-import TotalTransformationSection from './TotalTransformationSection';
+
+// Lazy load heavy modal contents
+const PostPaymentPage = lazy(() => import('./PostPaymentPage'));
+const DiscoverySessionPage = lazy(() => import('./DiscoverySessionPage'));
+const KitMagistralSection = lazy(() => import('./KitMagistralSection'));
+const TotalTransformationSection = lazy(() => import('./TotalTransformationSection'));
 
 const ModalManager = () => {
     const { modalState, hideModal, showServiceModal, handleTemplateInputChange, allTemplateInputs, toggleHackCompletion } = useAppContext();
@@ -239,7 +241,14 @@ const ModalManager = () => {
                     </div>
                     <button onClick={hideModal} className="text-5xl text-gray-500 hover:text-white transition-colors">&times;</button>
                 </div>
-                {modalBody}
+                <Suspense fallback={
+                    <div className="flex flex-col items-center justify-center p-12 space-y-4">
+                        <i className="fa-solid fa-circle-notch fa-spin text-5xl text-yellow-400"></i>
+                        <p className="text-xl text-gray-300 font-bold animate-pulse">Cargando protocolo...</p>
+                    </div>
+                }>
+                    {modalBody}
+                </Suspense>
             </div>
         </div>
     );
