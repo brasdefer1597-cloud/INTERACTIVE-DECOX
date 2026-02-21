@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, ReactNode, useMemo } from 'react';
 import * as Tone from 'tone';
 import { HACKS_DATA, PODERES_SHEREZADE_DATA } from '../utils/constants';
 import { Hack, ModalState, Archetype, PoderDeSherezade } from '../utils/types';
@@ -172,7 +172,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('completedHacks', JSON.stringify(Array.from(newCompleted)));
     }, [completedHacks, playCompletionSound]);
 
-    const handleGenerateDirective = async () => {
+    const handleGenerateDirective = useCallback(async () => {
         if (isDirectiveLoading) return;
         playUIClick();
         setIsDirectiveLoading(true);
@@ -193,7 +193,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsDirectiveLoading(false);
         }
-    };
+    }, [isDirectiveLoading, completedHacks, dominantArchetype, playUIClick, playDirectiveSound]);
 
     const handleTemplateInputChange = useCallback((hackId: number, aspecto: string, value: string) => {
         setAllTemplateInputs(prev => {
@@ -209,10 +209,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
-    const showServiceModal = (serviceType: 'discovery' | 'magistral' | 'total') => {
+    const showServiceModal = useCallback((serviceType: 'discovery' | 'magistral' | 'total') => {
         playModalOpen();
         setModalState({ isOpen: true, type: serviceType, data: null });
-    };
+    }, [playModalOpen]);
 
     const showHackModal = useCallback((id: number) => {
         const hack = HACKS_DATA.find(h => h.id === id);
@@ -230,15 +230,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [playModalOpen]);
 
-    const showSrapModal = () => {
+    const showSrapModal = useCallback(() => {
         playModalOpen();
         setModalState({ isOpen: true, type: 'srap', data: null });
-    }
+    }, [playModalOpen]);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playModalClose();
         setModalState({ isOpen: false, type: null, data: null });
-    }
+    }, [playModalClose]);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -252,22 +252,32 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }, 500);
     }, [handleCelebration]);
 
-    const handleRetakeQuiz = () => {
+    const handleRetakeQuiz = useCallback(() => {
         playUIClick();
         setDominantArchetype(null);
         localStorage.removeItem('dominantArchetype');
         localStorage.removeItem('completedHacks'); // Also reset hacks if desired
         setCompletedHacks(new Set());
-    };
+    }, [playUIClick]);
+
+    // Optimization: Memoize the context value to prevent unnecessary re-renders of consuming components.
+    // This ensures referential stability when the provider re-renders but the state hasn't changed.
+    const contextValue = useMemo(() => ({
+        completedHacks, modalState, setModalState, celebrate, dominantArchetype, aiDirective, isDirectiveLoading, allTemplateInputs, isAudioContextStarted,
+        startAudioContext, playUIClick, playModalOpen, playModalClose, playQuizSelect, playComboReveal,
+        handleCelebration, toggleHackCompletion, handleGenerateDirective, handleTemplateInputChange,
+        showServiceModal, showHackModal, showActivationModal, showSrapModal, hideModal,
+        handleQuizComplete, handleRetakeQuiz
+    }), [
+        completedHacks, modalState, celebrate, dominantArchetype, aiDirective, isDirectiveLoading, allTemplateInputs, isAudioContextStarted,
+        startAudioContext, playUIClick, playModalOpen, playModalClose, playQuizSelect, playComboReveal,
+        handleCelebration, toggleHackCompletion, handleGenerateDirective, handleTemplateInputChange,
+        showServiceModal, showHackModal, showActivationModal, showSrapModal, hideModal,
+        handleQuizComplete, handleRetakeQuiz
+    ]);
 
     return (
-        <AppContext.Provider value={{
-            completedHacks, modalState, setModalState, celebrate, dominantArchetype, aiDirective, isDirectiveLoading, allTemplateInputs, isAudioContextStarted,
-            startAudioContext, playUIClick, playModalOpen, playModalClose, playQuizSelect, playComboReveal,
-            handleCelebration, toggleHackCompletion, handleGenerateDirective, handleTemplateInputChange,
-            showServiceModal, showHackModal, showActivationModal, showSrapModal, hideModal,
-            handleQuizComplete, handleRetakeQuiz
-        }}>
+        <AppContext.Provider value={contextValue}>
             {children}
         </AppContext.Provider>
     );
