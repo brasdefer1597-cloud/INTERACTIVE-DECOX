@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import * as Tone from 'tone';
 import { HACKS_DATA, PODERES_SHEREZADE_DATA } from '../utils/constants';
 import { Hack, ModalState, Archetype, PoderDeSherezade } from '../utils/types';
-import { generateStrategicDirective } from '../services/geminiService';
 
 interface AppContextType {
     completedHacks: Set<number>;
@@ -183,6 +182,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             const remainingHacks = HACKS_DATA.filter(h => !completedHacks.has(h.id)).map(h => h.title).join(', ') || 'ninguno';
             const archetypeInfo = dominantArchetype ? `Su arquetipo dominante es '${dominantArchetype}'.` : 'Aún no ha descubierto su arquetipo.';
 
+            const { generateStrategicDirective } = await import('../services/geminiService');
             const directive = await generateStrategicDirective(completedHackTitles, remainingHacks, archetypeInfo);
             setAiDirective(directive);
             playDirectiveSound();
