@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { HACKS_DATA, PODERES_SHEREZADE_DATA } from '../utils/constants';
 import { Hack, PoderDeSherezade } from '../utils/types';
-import PostPaymentPage from './PostPaymentPage';
-import DiscoverySessionPage from './DiscoverySessionPage';
-import KitMagistralSection from './KitMagistralSection';
-import TotalTransformationSection from './TotalTransformationSection';
+
+// Lazy load large modal components to improve initial load
+const PostPaymentPage = lazy(() => import('./PostPaymentPage'));
+const DiscoverySessionPage = lazy(() => import('./DiscoverySessionPage'));
+const KitMagistralSection = lazy(() => import('./KitMagistralSection'));
+const TotalTransformationSection = lazy(() => import('./TotalTransformationSection'));
 
 const ModalManager = () => {
     const { modalState, hideModal, showServiceModal, handleTemplateInputChange, allTemplateInputs, toggleHackCompletion } = useAppContext();
@@ -17,7 +19,7 @@ const ModalManager = () => {
     let modalBody: React.ReactNode;
 
     switch (modalState.type) {
-            case 'discovery':
+        case 'discovery':
             title = <><i className="fa-solid fa-key mr-3"></i>Sesión Descubrimiento</>;
             subtitle = 'Tu primer paso hacia la decodificación.';
             modalBody = <DiscoverySessionPage />;
@@ -239,7 +241,14 @@ const ModalManager = () => {
                     </div>
                     <button onClick={hideModal} className="text-5xl text-gray-500 hover:text-white transition-colors">&times;</button>
                 </div>
-                {modalBody}
+                <Suspense fallback={
+                    <div className="flex flex-col items-center justify-center p-12 text-yellow-500">
+                        <i className="fa-solid fa-bolt text-4xl animate-pulse mb-4"></i>
+                        <p className="text-xl font-bold animate-pulse">Cargando...</p>
+                    </div>
+                }>
+                    {modalBody}
+                </Suspense>
             </div>
         </div>
     );
