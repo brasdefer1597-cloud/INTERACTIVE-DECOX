@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react';
+import React from 'react';
 import { Hack } from '../utils/types';
 
 interface HacksSectionProps {
@@ -9,8 +9,7 @@ interface HacksSectionProps {
     playUIClick: () => void;
 }
 
-// ⚡ Bolt: Memoize HackCard to prevent unnecessary re-renders when other hacks' status changes
-const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: (id: number) => void; onAmplify: (id: number) => void; }> = memo(({ hack, isCompleted, onActivate, onAmplify }) => {
+const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => void; onAmplify: () => void; }> = ({ hack, isCompleted, onActivate, onAmplify }) => {
     return (
         <div className={`bg-gray-900 p-6 rounded-2xl border-2 transition-all duration-300 ${isCompleted ? 'border-green-500 shadow-lg shadow-green-500/20' : 'border-gray-700 hover:border-yellow-400 hover:shadow-xl hover:-translate-y-2'}`}>
             <div className="flex items-start justify-between">
@@ -25,32 +24,18 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: (id: nu
             </div>
             <p className="text-gray-300 mb-6">{hack.description}</p>
             <div className="flex space-x-4">
-                {/* ⚡ Bolt: Use stable handlers that take an ID to avoid inline arrow functions */}
-                <button onClick={() => onAmplify(hack.id)} className="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                <button onClick={onAmplify} className="flex-1 text-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">
                     <i className="fa-solid fa-satellite-dish mr-2"></i> Amplificar
                 </button>
-                <button onClick={() => onActivate(hack.id)} className="flex-1 text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-4 rounded-lg transition-colors">
+                <button onClick={onActivate} className="flex-1 text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-4 rounded-lg transition-colors">
                     <i className="fa-solid fa-bolt mr-2"></i> Activar
                 </button>
             </div>
         </div>
     );
-});
+};
 
-// ⚡ Bolt: Memoize HacksSection to avoid re-rendering entire list when parent updates unrelated state
-const HacksSection: React.FC<HacksSectionProps> = memo(({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
-
-    // ⚡ Bolt: Create stable handlers for the list items to prevent prop changes on every render
-    const handleActivate = useCallback((id: number) => {
-        playUIClick();
-        onActivateClick(id);
-    }, [playUIClick, onActivateClick]);
-
-    const handleAmplify = useCallback((id: number) => {
-        playUIClick();
-        onAmplifyClick(id);
-    }, [playUIClick, onAmplifyClick]);
-
+const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
     return (
         <section className="py-20 px-6 bg-black">
             <div className="max-w-6xl mx-auto">
@@ -66,14 +51,14 @@ const HacksSection: React.FC<HacksSectionProps> = memo(({ hacks, completedHacks,
                             key={hack.id}
                             hack={hack}
                             isCompleted={completedHacks.has(hack.id)}
-                            onActivate={handleActivate}
-                            onAmplify={handleAmplify}
+                            onActivate={() => { playUIClick(); onActivateClick(hack.id); }}
+                            onAmplify={() => { playUIClick(); onAmplifyClick(hack.id); }}
                         />
                     ))}
                 </div>
             </div>
         </section>
     );
-});
+};
 
 export default HacksSection;

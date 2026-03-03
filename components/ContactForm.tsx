@@ -43,9 +43,9 @@ const ContactForm: React.FC = () => {
             // Simulate sending data to a server
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            const response = await generateContactConfirmation(formData.objective);
+            const personalizedMessage = await generateContactConfirmation(formData.objective);
             
-            setMessage(`¡SOLICITUD RECIBIDA! ${response.text}`);
+            setMessage(`¡SOLICITUD RECIBIDA! ${personalizedMessage}`);
             setStatus('success');
             setFormData({ name: '', email: '', phone: '', objective: '', service: 'Transformación Total' });
             

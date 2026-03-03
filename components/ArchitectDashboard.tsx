@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Archetype } from '../utils/types';
 import { CERTIFICATIONS_DATA, HACKS_DATA } from '../utils/constants';
-import { useAppContext } from '../context/AppContext';
 
 interface ArchitectDashboardProps {
     completedHacks: Set<number>;
@@ -18,9 +17,7 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
     aiDirective,
     isDirectiveLoading,
 }) => {
-    const { aiThoughts } = useAppContext();
     const [displayedDirective, setDisplayedDirective] = useState("Solicita una directiva para tu próximo movimiento estratégico...");
-    const [showThoughts, setShowThoughts] = useState(false);
 
     const completedCount = completedHacks.size;
     const masteryLevel = completedCount <= 2 ? 'Novato' : completedCount <= 5 ? 'Adepto' : 'Maestro';
@@ -103,36 +100,13 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
                             <h3 className="text-lg font-bold text-gray-400 flex items-center"><i className="fa-solid fa-eye mr-2"></i>ORÁCULO ESTRATÉGICO</h3>
                             <span className="text-xs font-semibold text-purple-400 bg-purple-900/50 px-2 py-1 rounded-md">POTENCIADO POR IA</span>
                          </div>
-                         <div className="p-4 bg-gray-900 rounded-lg min-h-[100px] flex flex-col items-center justify-center">
+                         <div className="p-4 bg-gray-900 rounded-lg min-h-[100px] flex items-center justify-center">
                             {isDirectiveLoading ? (
                                 <i className="fa-solid fa-spinner fa-spin text-3xl text-yellow-400"></i>
                             ) : (
-                                <>
-                                    <p className={`text-lg text-gray-200 italic ${aiDirective ? 'typewriter-text w-full' : ''}`}>
-                                        {displayedDirective}
-                                    </p>
-                                    {aiThoughts && (
-                                        <div className="w-full mt-4 border-t border-gray-800 pt-4">
-                                            <button
-                                                onClick={() => setShowThoughts(!showThoughts)}
-                                                className="text-purple-400 hover:text-purple-300 font-bold text-sm flex items-center transition-colors"
-                                            >
-                                                <i className={`fa-solid ${showThoughts ? 'fa-eye-slash' : 'fa-brain'} mr-2`}></i>
-                                                {showThoughts ? 'OCULTAR RAZONAMIENTO ESTRATÉGICO' : 'VER RAZONAMIENTO ESTRATÉGICO'}
-                                            </button>
-                                            {showThoughts && (
-                                                <div className="mt-4 p-4 bg-black/50 border border-purple-500/30 rounded-lg text-gray-300 italic text-sm leading-relaxed overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
-                                                    <div className="flex items-center mb-2 text-purple-500/70 uppercase text-xs font-black tracking-widest">
-                                                        <i className="fa-solid fa-terminal mr-2"></i> Procesamiento de Red Neuronal
-                                                    </div>
-                                                    <div className="whitespace-pre-wrap">
-                                                        {aiThoughts}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </>
+                                <p className={`text-lg text-gray-200 italic ${aiDirective ? 'typewriter-text' : ''}`}>
+                                    {displayedDirective}
+                                </p>
                             )}
                          </div>
                          <button 
