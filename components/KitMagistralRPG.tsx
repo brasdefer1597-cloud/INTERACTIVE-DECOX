@@ -21,7 +21,7 @@ const TwistComponent: React.FC<{twist: typeof RPG_MODULES_DATA[number]['twist']}
     const [isRevealed, setIsRevealed] = useState(false);
 
     const baseClasses = "mt-4 p-4 rounded-lg cursor-pointer transition-all";
-    const twistStyles = {
+    const twistStyles: { [key: string]: string } = {
         boss: 'bg-red-900/30 border border-red-700 text-red-400',
         mission: 'bg-yellow-900/30 border border-yellow-700 text-yellow-400',
         'power-up': 'bg-blue-900/30 border border-blue-700 text-blue-400',
@@ -38,7 +38,7 @@ const TwistComponent: React.FC<{twist: typeof RPG_MODULES_DATA[number]['twist']}
                          <p>{twist.content}</p>
                     ) : (
                         <ul className="list-disc list-inside space-y-1">
-                            {twist.content.map((item, index) => <li key={index} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}></li>)}
+                            {twist.content.map((item: string, index: number) => <li key={index} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}></li>)}
                         </ul>
                     )}
                 </div>
