@@ -10,6 +10,8 @@ const GrimorioTacticoSection: React.FC = () => {
     const [comboPoder1, setComboPoder1] = useState('');
     const [comboPoder2, setComboPoder2] = useState('');
     const [comboResultado, setComboResultado] = useState('');
+    const [comboThoughts, setComboThoughts] = useState('');
+    const [showThoughts, setShowThoughts] = useState(false);
     const [isForging, setIsForging] = useState(false);
 
     useEffect(() => {
@@ -56,9 +58,14 @@ const GrimorioTacticoSection: React.FC = () => {
         if (!comboPoder1 || !comboPoder2 || isForging) return;
         setIsForging(true);
         setComboResultado('');
+        setComboThoughts('');
+        setShowThoughts(false);
         try {
-            const resultado = await generateAlchemicalCombo(comboPoder1, comboPoder2);
-            setComboResultado(resultado);
+            const response = await generateAlchemicalCombo(comboPoder1, comboPoder2);
+            setComboResultado(response.text);
+            if (response.thoughts) {
+                setComboThoughts(response.thoughts);
+            }
         } catch (error) {
             console.error("Error forging combo:", error);
             setComboResultado("Error: Fusión fallida. Los ingredientes son inestables.");
@@ -144,6 +151,27 @@ const GrimorioTacticoSection: React.FC = () => {
                         <label className="block text-lg font-bold text-gray-300 mb-2">Resultado: Mi Combo Alquímico</label>
                         <textarea rows={4} placeholder="El resultado de tu fusión aparecerá aquí..." value={comboResultado} readOnly className="w-full bg-gray-800 border-2 border-gray-600 rounded-lg p-3 text-lg text-gray-200 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"></textarea>
                     </div>
+
+                    {comboThoughts && (
+                        <div className="mt-4">
+                            <button
+                                onClick={() => setShowThoughts(!showThoughts)}
+                                className="text-purple-400 hover:text-purple-300 font-bold flex items-center transition-colors"
+                            >
+                                <i className={`fa-solid ${showThoughts ? 'fa-eye-slash' : 'fa-brain'} mr-2`}></i>
+                                {showThoughts ? 'OCULTAR RAZONAMIENTO ALQUÍMICO' : 'VER RAZONAMIENTO ALQUÍMICO'}
+                            </button>
+                            {showThoughts && (
+                                <div className="mt-4 p-4 bg-black/50 border border-purple-500/30 rounded-lg text-gray-300 italic text-sm leading-relaxed overflow-hidden">
+                                    <div className="flex items-center mb-2 text-purple-500/70 uppercase text-xs font-black tracking-widest">
+                                        <i className="fa-solid fa-terminal mr-2"></i> Procesamiento de Fusión
+                                    </div>
+                                    {comboThoughts}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <button onClick={handleForjarCombo} disabled={isForging || !comboPoder1 || !comboPoder2} className="w-full mt-6 text-center bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed btn-dynamic">
                         {isForging ? (
                             <><i className="fa-solid fa-spinner fa-spin mr-2"></i> FORJANDO...</>
