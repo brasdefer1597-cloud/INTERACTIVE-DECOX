@@ -10,6 +10,7 @@ interface AppContextType {
     celebrate: boolean;
     dominantArchetype: Archetype | null;
     aiDirective: string;
+    aiThoughts: string;
     isDirectiveLoading: boolean;
     allTemplateInputs: { [hackId: number]: { [aspecto: string]: string } };
     isAudioContextStarted: boolean;
@@ -43,6 +44,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [celebrate, setCelebrate] = useState(false);
     const [dominantArchetype, setDominantArchetype] = useState<Archetype | null>(null);
     const [aiDirective, setAiDirective] = useState('');
+    const [aiThoughts, setAiThoughts] = useState('');
     const [isDirectiveLoading, setIsDirectiveLoading] = useState(false);
     const [allTemplateInputs, setAllTemplateInputs] = useState<{ [hackId: number]: { [aspecto: string]: string } }>({});
     const [isAudioContextStarted, setIsAudioContextStarted] = useState(false);
@@ -177,14 +179,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         playUIClick();
         setIsDirectiveLoading(true);
         setAiDirective('');
+        setAiThoughts('');
 
         try {
             const completedHackTitles = Array.from(completedHacks).map(id => HACKS_DATA.find(h => h.id === id)?.title).join(', ') || 'ninguno';
             const remainingHacks = HACKS_DATA.filter(h => !completedHacks.has(h.id)).map(h => h.title).join(', ') || 'ninguno';
             const archetypeInfo = dominantArchetype ? `Su arquetipo dominante es '${dominantArchetype}'.` : 'Aún no ha descubierto su arquetipo.';
 
-            const directive = await generateStrategicDirective(completedHackTitles, remainingHacks, archetypeInfo);
-            setAiDirective(directive);
+            const response = await generateStrategicDirective(completedHackTitles, remainingHacks, archetypeInfo);
+            setAiDirective(response.text);
+            if (response.thoughts) {
+                setAiThoughts(response.thoughts);
+            }
             playDirectiveSound();
 
         } catch (error: any) {
@@ -262,7 +268,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <AppContext.Provider value={{
-            completedHacks, modalState, setModalState, celebrate, dominantArchetype, aiDirective, isDirectiveLoading, allTemplateInputs, isAudioContextStarted,
+            completedHacks, modalState, setModalState, celebrate, dominantArchetype, aiDirective, aiThoughts, isDirectiveLoading, allTemplateInputs, isAudioContextStarted,
             startAudioContext, playUIClick, playModalOpen, playModalClose, playQuizSelect, playComboReveal,
             handleCelebration, toggleHackCompletion, handleGenerateDirective, handleTemplateInputChange,
             showServiceModal, showHackModal, showActivationModal, showSrapModal, hideModal,

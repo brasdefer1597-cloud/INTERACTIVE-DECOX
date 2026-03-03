@@ -12,9 +12,24 @@ if (API_KEY) {
     console.warn("API_KEY is not set. AI features will be disabled.");
 }
 
-export async function generateStrategicDirective(completedHacks: string, remainingHacks: string, archetypeInfo: string): Promise<string> {
+export interface GeminiResponse {
+    text: string;
+    thoughts?: string;
+}
+
+function extractResponse(response: any): GeminiResponse {
+    const text = response.text || "";
+    const thoughts = response.candidates?.[0]?.content?.parts
+        ?.filter((part: any) => part.thought)
+        ?.map((part: any) => part.text)
+        ?.join("\n");
+
+    return { text: text.trim(), thoughts: thoughts?.trim() };
+}
+
+export async function generateStrategicDirective(completedHacks: string, remainingHacks: string, archetypeInfo: string): Promise<GeminiResponse> {
     if (!ai) {
-        return "Error: El Oráculo no está disponible. La API Key no está configurada.";
+        return { text: "Error: El Oráculo no está disponible. La API Key no está configurada." };
     }
 
     try {
@@ -41,22 +56,21 @@ export async function generateStrategicDirective(completedHacks: string, remaini
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
+            config: {
+                thinkingConfig: { includeThoughts: true }
+            }
         });
         
-        const text = response.text;
-        if (!text) {
-          throw new Error("No text response from Gemini API.");
-        }
-        return text.trim();
+        return extractResponse(response);
     } catch (error) {
         console.error("Error generating strategic directive:", error);
-        return "Error: No se pudo conectar con el Oráculo Chalamandra. Verifica tu conexión y la configuración del sistema.";
+        return { text: "Error: No se pudo conectar con el Oráculo Chalamandra. Verifica tu conexión y la configuración del sistema." };
     }
 }
 
-export async function generatePostPaymentDirective(serviceName: string, archetype: string | null): Promise<string> {
+export async function generatePostPaymentDirective(serviceName: string, archetype: string | null): Promise<GeminiResponse> {
     if (!ai) {
-        return "Tu camino ha comenzado. Prepara tu mente para la transformación. Los detalles de tu sesión llegarán pronto.";
+        return { text: "Tu camino ha comenzado. Prepara tu mente para la transformación. Los detalles de tu sesión llegarán pronto." };
     }
     
     try {
@@ -78,22 +92,21 @@ export async function generatePostPaymentDirective(serviceName: string, archetyp
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
+            config: {
+                thinkingConfig: { includeThoughts: true }
+            }
         });
 
-        const text = response.text;
-        if (!text) {
-          throw new Error("No text response from Gemini API.");
-        }
-        return text.trim();
+        return extractResponse(response);
     } catch (error) {
         console.error("Error generating post-payment directive:", error);
-        return "Tu camino ha comenzado. Prepara tu mente para la transformación. Los detalles de tu sesión llegarán pronto.";
+        return { text: "Tu camino ha comenzado. Prepara tu mente para la transformación. Los detalles de tu sesión llegarán pronto." };
     }
 }
 
-export async function generarHook(power: string, domain: string): Promise<string> {
+export async function generarHook(power: string, domain: string): Promise<GeminiResponse> {
     if (!ai) {
-        return "Error: El Oráculo no está disponible. La API Key no está configurada.";
+        return { text: "Error: El Oráculo no está disponible. La API Key no está configurada." };
     }
 
     try {
@@ -120,23 +133,22 @@ export async function generarHook(power: string, domain: string): Promise<string
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
+            config: {
+                thinkingConfig: { includeThoughts: true }
+            }
         });
 
-        const text = response.text;
-        if (!text) {
-          throw new Error("No text response from Gemini API.");
-        }
-        return text.trim();
+        return extractResponse(response);
 
     } catch (error) {
         console.error("Error generating hook:", error);
-        return "Error: No se pudo conectar con el Oráculo Chalamandra. El sistema está experimentando interferencias.";
+        return { text: "Error: No se pudo conectar con el Oráculo Chalamandra. El sistema está experimentando interferencias." };
     }
 }
 
-export async function generateContactConfirmation(objective: string): Promise<string> {
+export async function generateContactConfirmation(objective: string): Promise<GeminiResponse> {
     if (!ai) {
-        return "Tu solicitud ha sido recibida y está siendo procesada. Nos pondremos en contacto contigo en breve.";
+        return { text: "Tu solicitud ha sido recibida y está siendo procesada. Nos pondremos en contacto contigo en breve." };
     }
 
     try {
@@ -159,23 +171,22 @@ export async function generateContactConfirmation(objective: string): Promise<st
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
+            config: {
+                thinkingConfig: { includeThoughts: true }
+            }
         });
 
-        const text = response.text;
-        if (!text) {
-          throw new Error("No text response from Gemini API.");
-        }
-        return text.trim();
+        return extractResponse(response);
 
     } catch (error) {
         console.error("Error generating contact confirmation:", error);
-        return "Tu solicitud ha sido recibida y está siendo procesada. El primer movimiento está en juego. Espera la transmisión.";
+        return { text: "Tu solicitud ha sido recibida y está siendo procesada. El primer movimiento está en juego. Espera la transmisión." };
     }
 }
 
-export async function generateAlchemicalCombo(power1: string, power2: string): Promise<string> {
+export async function generateAlchemicalCombo(power1: string, power2: string): Promise<GeminiResponse> {
     if (!ai) {
-        return "Error: El Oráculo no está disponible. La API Key no está configurada.";
+        return { text: "Error: El Oráculo no está disponible. La API Key no está configurada." };
     }
 
     try {
@@ -205,16 +216,15 @@ export async function generateAlchemicalCombo(power1: string, power2: string): P
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
+            config: {
+                thinkingConfig: { includeThoughts: true }
+            }
         });
 
-        const text = response.text;
-        if (!text) {
-          throw new Error("No text response from Gemini API.");
-        }
-        return text.trim();
+        return extractResponse(response);
 
     } catch (error) {
         console.error("Error generating alchemical combo:", error);
-        return "Error: Fusión fallida. Los ingredientes son inestables. Revisa el protocolo.";
+        return { text: "Error: Fusión fallida. Los ingredientes son inestables. Revisa el protocolo." };
     }
 }

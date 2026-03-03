@@ -15,8 +15,8 @@ const PostPaymentPage: React.FC<PostPaymentPageProps> = ({ serviceName, archetyp
         const fetchDirective = async () => {
             setIsLoading(true);
             try {
-                const result = await generatePostPaymentDirective(serviceName, archetype);
-                setDirective(result);
+                const response = await generatePostPaymentDirective(serviceName, archetype);
+                setDirective(response.text);
             } catch (error) {
                 console.error(error);
                 setDirective("Tu camino ha comenzado. Prepara tu mente para la transformación. Los detalles de tu sesión llegarán pronto a tu email.");
