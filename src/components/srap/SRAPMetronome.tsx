@@ -13,11 +13,9 @@ const SRAPMetronome: React.FC = () => {
     const startAudioContext = useCallback(async () => {
         if (isAudioContextStarted) return;
         await Tone.start();
-        console.log("AudioContext started for Metronome!");
         setIsAudioContextStarted(true);
     }, [isAudioContextStarted]);
     
-    // Initialize synth once audio context is started
     useEffect(() => {
         if (!synthRef.current) {
             synthRef.current = new Tone.MembraneSynth({
@@ -50,7 +48,6 @@ const SRAPMetronome: React.FC = () => {
         if (!isAudioContextStarted || !synthRef.current) return;
         
         stopMetronome();
-
         Tone.Transport.bpm.value = bpm;
         
         loopRef.current = new Tone.Loop((time) => {
@@ -76,7 +73,6 @@ const SRAPMetronome: React.FC = () => {
         if (isPlaying) {
             stopMetronome();
         } else {
-            // Short delay allows the audio context to fully initialize on first click
             setTimeout(() => {
                 startMetronome();
             }, 100);
@@ -91,7 +87,6 @@ const SRAPMetronome: React.FC = () => {
         }
     };
 
-    // Cleanup on unmount
     useEffect(() => {
         return () => {
             stopMetronome();
@@ -99,43 +94,58 @@ const SRAPMetronome: React.FC = () => {
     }, [stopMetronome]);
 
     return (
-        <section className="py-20 px-6 bg-black">
+        <section className="py-32 px-6 bg-black">
             <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-4xl font-black text-white mb-6">
-                    <i className="fa-solid fa-wave-square mr-3 text-cyan-300"></i> METRÓNOMO SRAP
-                </h2>
-                <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                    Calibra tu frecuencia operativa. El Metrónomo te ayuda a encontrar el ritmo óptimo entre la acción y la pausa, la ejecución y la reflexión. Sincroniza tu tempo interno con las demandas del entorno.
-                </p>
+                <div className="mb-16">
+                    <span className="inline-block px-4 py-1.5 bg-cyan-500/10 text-cyan-500 text-[0.7rem] font-black rounded-full mb-6 uppercase tracking-[0.3em] border border-cyan-500/20">
+                        Protocolo de Sincronización
+                    </span>
+                    <h2 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter uppercase italic">
+                        Metrónomo SRAP
+                    </h2>
+                    <p className="text-xl text-gray-400 font-medium leading-relaxed max-w-2xl mx-auto">
+                        Calibra tu frecuencia operativa. Encuentra el ritmo óptimo entre la acción y la pausa, la ejecución y la reflexión estratégica.
+                    </p>
+                </div>
 
-                <div className="dashboard-widget max-w-lg mx-auto p-8">
-                    <div 
-                        className={`w-24 h-24 mx-auto mb-8 rounded-full border-4 border-cyan-400 flex items-center justify-center transition-all duration-100 relative ${isPulsingVisual ? 'bg-cyan-400/30 scale-110' : 'bg-transparent scale-100'}`}
-                    >
-                        <p className="text-4xl font-black text-white">{bpm}</p>
-                        <span className="text-sm text-gray-400 absolute -bottom-6">BPM</span>
+                <div className="bg-gray-900/40 backdrop-blur-md max-w-lg mx-auto p-12 rounded-[3.5rem] border border-gray-800 shadow-2xl relative overflow-hidden">
+                    {/* Pulsing indicator */}
+                    <div className="relative mb-12">
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-cyan-500/20 transition-all duration-300 ${isPulsingVisual ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`}></div>
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-cyan-500/10 transition-all duration-500 ${isPulsingVisual ? 'scale-150 opacity-100' : 'scale-100 opacity-0'}`}></div>
+
+                        <div className={`w-28 h-28 mx-auto rounded-full border-4 flex flex-col items-center justify-center transition-all duration-100 relative z-10 ${isPulsingVisual ? 'bg-cyan-500 border-cyan-400 scale-105 shadow-[0_0_40px_rgba(6,182,212,0.5)]' : 'bg-transparent border-gray-800 scale-100'}`}>
+                            <p className={`text-4xl font-black transition-colors ${isPulsingVisual ? 'text-black' : 'text-white'}`}>{bpm}</p>
+                            <span className={`text-[0.6rem] font-black uppercase tracking-widest ${isPulsingVisual ? 'text-black/60' : 'text-gray-500'}`}>BPM</span>
+                        </div>
                     </div>
 
-                    <div className="mb-8 pt-4">
-                        <label htmlFor="bpm-slider" className="sr-only">BPM</label>
+                    <div className="mb-12">
                         <input
                             type="range"
-                            id="bpm-slider"
                             min="40"
                             max="200"
                             value={bpm}
                             onChange={handleBpmChange}
-                            className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer metronome-slider"
+                            className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
                             aria-label={`Tempo de ${bpm} BPM`}
                         />
+                        <div className="flex justify-between mt-4 text-[0.65rem] font-black text-gray-600 uppercase tracking-widest">
+                            <span>Largo</span>
+                            <span>Moderato</span>
+                            <span>Presto</span>
+                        </div>
                     </div>
                     
                     <button 
                         onClick={handleTogglePlay}
-                        className="px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-black rounded-2xl shadow-2xl hover:from-cyan-600 hover:to-blue-600 transition-all text-lg btn-dynamic"
+                        className="group relative w-full overflow-hidden bg-white text-black font-black py-5 rounded-2xl transition-all hover:text-white"
                     >
-                        <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'} mr-2`}></i>
-                        {isPlaying ? 'DETENER' : 'INICIAR'}
+                        <div className="absolute inset-0 bg-cyan-600 translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+                        <span className="relative z-10 flex items-center justify-center text-lg uppercase tracking-widest">
+                            <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'} mr-3 text-sm`}></i>
+                            {isPlaying ? 'Detener Frecuencia' : 'Iniciar Ritual SRAP'}
+                        </span>
                     </button>
                 </div>
             </div>

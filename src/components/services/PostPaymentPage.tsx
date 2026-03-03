@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { generatePostPaymentDirective } from '../services/geminiService';
-import { Archetype } from '../utils/types';
+import { generatePostPaymentDirective } from '../../services/geminiService';
+import { Archetype } from '../../utils/types';
 
 interface PostPaymentPageProps {
     serviceName: string;

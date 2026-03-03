@@ -1,5 +1,56 @@
 import { Hack, Certification, PoderDeSherezade } from './types';
 
+export const QUIZ_QUESTIONS = [
+    {
+        question: "¿Cómo reaccionas ante un problema complejo?",
+        options: {
+            'El Arquitecto': "Lo desgloso en componentes y creo un plan estructural.",
+            'El Alquimista': "Experimento con diferentes enfoques y siento la energía de la situación.",
+            'El Explorador': "Busco información externa y me aventuro en lo desconocido."
+        }
+    },
+    {
+        question: "Tu mayor fortaleza en un equipo es:",
+        options: {
+            'El Arquitecto': "La capacidad de crear orden, sistemas y predictibilidad.",
+            'El Alquimista': "La habilidad de transformar conflictos y catalizar nuevas ideas.",
+            'El Explorador': "La audacia para probar nuevos caminos y adaptarme rápidamente."
+        }
+    },
+    {
+        question: "Prefieres un entorno que sea:",
+        options: {
+            'El Arquitecto': "Controlado, optimizado y predecible.",
+            'El Alquimista': "Fluido, inspirador y lleno de potencial.",
+            'El Explorador': "Dinámico, desafiante y lleno de oportunidades."
+        }
+    },
+    {
+        question: "En una situación de caos total, tu prioridad es:",
+        options: {
+            'El Arquitecto': "Restaurar el orden y establecer procesos claros.",
+            'El Alquimista': "Encontrar la oportunidad oculta y transmutar la crisis.",
+            'El Explorador': "Moverte rápido, probar salidas y adaptarte al terreno."
+        }
+    },
+    {
+        question: "Para ti, el éxito se define como:",
+        options: {
+            'El Arquitecto': "Un sistema que funciona sin errores y es altamente escalable.",
+            'El Alquimista': "Haber transformado una realidad ordinaria en algo extraordinario.",
+            'El Explorador': "Haber conquistado un territorio nuevo y superado límites personales."
+        }
+    },
+    {
+        question: "Tu herramienta favorita es:",
+        options: {
+            'El Arquitecto': "Una hoja de ruta detallada o un plano técnico robusto.",
+            'El Alquimista': "Tu intuición y la capacidad de ver patrones invisibles.",
+            'El Explorador': "Tu curiosidad inagotable y tu capacidad de pivotar al instante."
+        }
+    }
+];
+
 export const PODERES_SHEREZADE_DATA: PoderDeSherezade[] = [
     {
         id: 1,
@@ -105,6 +156,20 @@ export const PODERES_SHEREZADE_DATA: PoderDeSherezade[] = [
             { aspecto: 'El Renacimiento (La nueva forma)', guia: '¿Cuál es la primera acción que tomaré desde mi nueva identidad?' }
         ],
         miniReto: "Identifica una 'piel vieja' (una creencia limitante) y escribe su esquela. Dale un entierro simbólico."
+    },
+    {
+        id: 8,
+        title: "Visión Predictiva",
+        icon: '🔮',
+        clave: "Anticipación de Futuros.",
+        proposito: "Anticipar, no reaccionar.",
+        poder: "La capacidad de ver el futuro como una consecuencia de patrones presentes.",
+        ejemploDeUso: "No esperes a que el futuro llegue, constrúyelo. Utiliza la extrapolación de datos para predecir curvas de cambio.",
+        plantilla: [
+            { aspecto: 'Radar de Señales Débiles', guia: 'Busca patrones que aún no son mainstream.' },
+            { aspecto: 'Matriz de Impacto Futuro', guia: 'Cruza dos tendencias actuales y describe su evolución.' }
+        ],
+        miniReto: "Identifica una tendencia emergente y escribe 3 escenarios posibles."
     }
 ];
 
@@ -113,12 +178,12 @@ export const HACKS_DATA: Hack[] = [
         id: 1,
         title: "Scheherazade",
         subtitle: "Dominio Narrativo Absoluto",
-        description: "No cuentes historias, secuestra marcos de referencia. Controlas la lente perceptual, no los eventos. Es 'pre-suasión' pura: construyes la catedral antes de invitar a orar.",
+        description: "No cuentes historias, secuestra marcos de referencia. Controlas la lente perceptual, no los eventos.",
         metodo: "7 Sombreros de Innovación",
         archetype: "El Alquimista",
         archetypeIcon: '🍓',
         amplificacion: "No cuentes historias, secuestra marcos de referencia. Controlas la lente perceptual, no los eventos. Es 'pre-suasión' pura: construyes la catedral antes de invitar a orar.",
-        ejercicio: "Antes de tu próxima reunión importante, envía un email 'preparatorio' que reencuadre el tema completamente a tu favor (ej: 'Imaginemos un futuro donde X sea imposible...')",
+        ejercicio: "Antes de tu próxima reunión importante, envía un email 'preparatorio' que reencuadre el tema completamente a tu favor.",
         colorClass: "text-pink-400",
         icon: 'fa-solid fa-crown',
         poderDeSherezadeId: 1,
@@ -135,12 +200,12 @@ export const HACKS_DATA: Hack[] = [
         id: 2,
         title: "Hermes Trismegisto",
         subtitle: "Robo de Patrones Fractales",
-        description: "El sistema operativo de la realidad. Las 'causas raíz' son universales en forma, no únicas en contenido. Transfiere soluciones a la estructura, no al problema específico.",
+        description: "El sistema operativo de la realidad. Las 'causas raíz' son universales en forma, no únicas en contenido.",
         metodo: "5 Porqués (Excavación Profunda)",
         archetype: "El Alquimista",
         archetypeIcon: '🔪',
         amplificacion: "El sistema operativo de la realidad. Las 'causas raíz' son universales en forma, no únicas en contenido. Transfiere soluciones a la estructura, no al problema específico.",
-        ejercicio: "Crea un 'mapa fractal' semanal: toma un problema personal y encuéntralo replicado en 3 contextos históricos o industriales completamente diferentes.",
+        ejercicio: "Crea un 'mapa fractal' semanal: toma un problema personal y encuéntralo replicado en 3 contextos históricos o industriales.",
         colorClass: "text-green-400",
         icon: 'fa-solid fa-key',
         poderDeSherezadeId: 3,
@@ -157,12 +222,12 @@ export const HACKS_DATA: Hack[] = [
         id: 3,
         title: "Lewis Carroll",
         subtitle: "La Pregunta Absurda",
-        description: "La paradoja es la 'restricción liberadora'. Cuando fuerzas al cerebro a sostener ideas contradictorias, se ve forzado a construir un nuevo modelo mental (disrupción pura).",
+        description: "La paradoja es la 'restricción liberadora'. Cuando fuerzas al cerebro a sostener ideas contradictorias, se ve forzado a construir un nuevo modelo mental.",
         metodo: "6 Sombreros de Bono (Paradoja)",
         archetype: "El Arquitecto",
         archetypeIcon: '🍓',
         amplificacion: "La paradoja es la 'restricción liberadora'. Cuando fuerzas al cerebro a sostener ideas contradictorias, se ve forzado a construir un nuevo modelo mental (disrupción pura).",
-        ejercicio: "Toma una paradoja personal (ej: 'Quiero estabilidad pero aventura') y fuerza una fusión radical en un plan de acción concreto esta semana.",
+        ejercicio: "Toma una paradoja personal y fuerza una fusión radical en un plan de acción concreto esta semana.",
         colorClass: "text-yellow-400",
         icon: 'fa-solid fa-hat-wizard',
         poderDeSherezadeId: 6,
@@ -179,12 +244,12 @@ export const HACKS_DATA: Hack[] = [
         id: 4,
         title: "Hacker Anónima",
         subtitle: "Hackeo de Sistemas Invisibles",
-        description: "No se hackean cosas, se hackean incentivos. Opera siempre con el 'código fuente' (incentivos reales), nunca con el 'modelo mental del manual de usuario'.",
+        description: "No se hackean cosas, se hackean incentivos. Opera siempre con el 'código fuente' (incentivos reales).",
         metodo: "Ajedrez en 3 Planos Dimensionales",
         archetype: "El Explorador",
         archetypeIcon: '🔪',
         amplificacion: "No se hackean cosas, se hackean incentivos. Opera siempre con el 'código fuente' (incentivos reales), nunca con el 'modelo mental del manual de usuario'.",
-        ejercicio: "Identifica un incentivo oculto en tu entorno laboral (ej: 'La gente realmente optimiza para evitar reuniones largas') y diseña un exploit esta semana.",
+        ejercicio: "Identifica un incentivo oculto en tu entorno laboral y diseña un exploit esta semana.",
         colorClass: "text-indigo-400",
         icon: 'fa-solid fa-user-secret',
         poderDeSherezadeId: 4,
@@ -201,12 +266,12 @@ export const HACKS_DATA: Hack[] = [
         id: 5,
         title: "El Trickster",
         subtitle: "Inyección Estratégica de Caos",
-        description: "El caos estratégico es una 'prueba de estrés' controlada. Es la forma más rápida de obligar al sistema a revelar sus verdaderas vulnerabilidades y dependencias ocultas.",
+        description: "El caos estratégico es una 'prueba de estrés' controlada. Obliga al sistema a revelar vulnerabilidades.",
         metodo: "4 Cuadrantes de Covey (Reorganización)",
         archetype: "El Explorador",
         archetypeIcon: '👑',
         amplificacion: "El caos estratégico es una 'prueba de estrés' controlada. Es la forma más rápida de obligar al sistema a revelar sus verdaderas vulnerabilidades y dependencias ocultas.",
-        ejercicio: "Programa un 'día de caos' mensual: invierte completamente tu rutina (ej: empieza por el final del día) y documenta qué patrones emergen.",
+        ejercicio: "Programa un 'día de caos' mensual: invierte completamente tu rutina y documenta qué patrones emergen.",
         colorClass: "text-red-400",
         icon: 'fa-solid fa-bomb',
         poderDeSherezadeId: 7,
@@ -223,12 +288,12 @@ export const HACKS_DATA: Hack[] = [
         id: 6,
         title: "Inteligencia Artificial",
         subtitle: "Supremacía de Datos",
-        description: "El 99% se obsesiona con el 'porqué' y la 'verdad'; el 1% se enfoca exclusivamente en el 'qué funciona'. La correlación ofrece patrones predictivos explotables inmediatamente.",
+        description: "El 99% se obsesiona con el 'porqué'; el 1% se enfoca exclusivamente en el 'qué funciona'.",
         metodo: "La Correlación sobre la Causalidad",
         archetype: "El Arquitecto",
         archetypeIcon: '🔪',
         amplificacion: "El 99% se obsesiona con el 'porqué' y la 'verdad'; el 1% se enfoca exclusivamente en el 'qué funciona'. La correlación ofrece patrones predictivos explotables inmediatamente.",
-        ejercicio: "Analiza tus 5 decisiones más importantes del último mes: ¿Cuántas fallaron por intuición? Corrige al menos una esta semana usando solo datos duros.",
+        ejercicio: "Analiza tus 5 decisiones más importantes: ¿Cuántas fallaron por intuición? Corrige una con datos duros.",
         colorClass: "text-cyan-400",
         icon: 'fa-solid fa-chart-pie',
         poderDeSherezadeId: 5,
@@ -245,12 +310,12 @@ export const HACKS_DATA: Hack[] = [
         id: 7,
         title: "Tu Yo de 8 Años",
         subtitle: "Conexión con el Genio Interior",
-        description: "El adulto está contaminado de sesgos. El niño interior opera en espacio pre-lógico, donde la imaginación no está limitada por el 'realismo'. Fuente de originalidad radical.",
+        description: "El adulto está contaminado de sesgos. El niño interior opera en espacio pre-lógico.",
         metodo: "Técnica Disney (Soñador, Realista, Crítico)",
         archetype: "El Explorador",
         archetypeIcon: '👑',
         amplificacion: "El adulto está contaminado de sesgos. El niño interior opera en espacio pre-lógico, donde la imaginación no está limitada por el 'realismo'. Fuente de originalidad radical.",
-        ejercicio: "Programa una 'Ronda de Pitch del Niño de 8 Años' semanal: describe tu proyecto actual usando solo dibujos o juguetes, e incorpora una idea 'loca' que surja.",
+        ejercicio: "Programa una 'Ronda de Pitch del Niño de 8 Años' semanal: describe tu proyecto usando solo dibujos.",
         colorClass: "text-orange-400",
         icon: 'fa-solid fa-teddy-bear',
         poderDeSherezadeId: 2,
@@ -267,14 +332,15 @@ export const HACKS_DATA: Hack[] = [
         id: 8,
         title: "Visión Predictiva",
         subtitle: "Anticipación de Futuros",
-        description: "La capacidad de anticipar movimientos futuros basándose en el análisis de patrones presentes y pasados.",
+        description: "Anticipar movimientos futuros basándose en el análisis de patrones presentes y pasados.",
         metodo: "Análisis de Tendencias y Proyección de Escenarios",
         archetype: "El Arquitecto",
         archetypeIcon: '🔮',
-        amplificacion: "No esperes a que el futuro llegue, constrúyelo. Utiliza la extrapolación de datos para predecir curvas de cambio antes de que sean obvias para la masa.",
-        ejercicio: "Identifica una tendencia emergente en tu industria y escribe 3 escenarios posibles para los próximos 5 años. Diseña una 'apuesta asimétrica' hoy para capitalizar el escenario más probable.",
+        amplificacion: "No esperes a que el futuro llegue, constrúyelo. Utiliza la extrapolación de datos para predecir curvas de cambio.",
+        ejercicio: "Identifica una tendencia emergente y escribe 3 escenarios posibles para los próximos 5 años.",
         colorClass: "text-yellow-400",
         icon: 'fa-solid fa-binoculars',
+        poderDeSherezadeId: 8,
         amplificacionProfunda: {
             datoOculto: "El futuro no es un misterio, es una consecuencia. La mayoría vive en el 'ahora reactivo'. El visionario vive en el 'futuro proyectado'. La ventaja no es la inteligencia, es el tiempo de anticipación.",
             miAmplificacion: "La visión predictiva requiere desconectar el ruido del presente. Dedica tiempo a estudiar la historia, no las noticias. Los ciclos se repiten. Quien conoce el ciclo, controla el resultado.",

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { HACKS_DATA, RPG_MODULES_DATA, RPG_MODULE_ORDER } from '../utils/constants';
-import { Hack, Archetype } from '../utils/types';
+import { HACKS_DATA, RPG_MODULES_DATA, RPG_MODULE_ORDER } from '../../utils/constants';
+import { Hack, Archetype } from '../../utils/types';
 
 interface ModuleCardProps {
     hack: Hack;
@@ -38,7 +38,7 @@ const TwistComponent: React.FC<{twist: typeof RPG_MODULES_DATA[number]['twist']}
                          <p>{twist.content}</p>
                     ) : (
                         <ul className="list-disc list-inside space-y-1">
-                            {twist.content.map((item, index) => <li key={index} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}></li>)}
+                            {twist.content.map((item, index) => <li key={index} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong></strong>') }}></li>)}
                         </ul>
                     )}
                 </div>

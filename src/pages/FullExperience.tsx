@@ -2,31 +2,36 @@ import React from 'react';
 import { useAppContext } from '../context/AppContext';
 import { HACKS_DATA } from '../utils/constants';
 
-// Landing Page Sections
-import Introduction from '../components/Introduction';
-import HowItWorks from '../components/HowItWorks';
-import Testimonials from '../components/Testimonials';
-import Faq from '../components/Faq';
-import Footer from '../components/Footer';
+// Layout & Navigation
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
-// Core App Sections
-import ArchetypeQuiz from '../components/ArchetypeQuiz';
-import HacksSection from '../components/HacksSection';
-import CertificationsSection from '../components/CertificationsSection';
-import ContactForm from '../components/ContactForm';
-import ArchitectDashboard from '../components/ArchitectDashboard';
-import GrimorioTacticoSection from '../components/GrimorioTacticoSection';
-import SRAPMetronome from '../components/SRAPMetronome';
-import OraculoChalamandra from '../components/OraculoChalamandra';
-import KitMagistralRPG from '../components/KitMagistralRPG';
-import PremiumServices from '../components/PremiumServices';
-import CertifiedTech from '../components/CertifiedTech';
-import SrapRitual from '../components/SrapRitual';
-import Header from '../components/Header';
-import WhatsAppFloat from '../components/WhatsAppFloat';
-import TheCodex from '../components/TheCodex';
-import Confetti from '../components/Confetti';
-import ModalManager from '../components/ModalManager';
+// Sections
+import Introduction from '../components/sections/Introduction';
+import HowItWorks from '../components/sections/HowItWorks';
+import Testimonials from '../components/sections/Testimonials';
+import Faq from '../components/sections/Faq';
+import TheCodex from '../components/sections/TheCodex';
+import CertifiedTech from '../components/sections/CertifiedTech';
+
+// Core Features
+import ArchetypeQuiz from '../components/quiz/ArchetypeQuiz';
+import HacksSection from '../components/hacks/HacksSection';
+import GrimorioTacticoSection from '../components/hacks/GrimorioTacticoSection';
+import ArchitectDashboard from '../components/dashboard/ArchitectDashboard';
+import OraculoChalamandra from '../components/oracle/OraculoChalamandra';
+import KitMagistralRPG from '../components/rpg/KitMagistralRPG';
+import SRAPMetronome from '../components/srap/SRAPMetronome';
+import SrapRitual from '../components/srap/SrapRitual';
+
+// Services
+import PremiumServices from '../components/services/PremiumServices';
+import ContactForm from '../components/services/ContactForm';
+
+// Shared
+import ModalManager from '../components/shared/ModalManager';
+import Confetti from '../components/shared/Confetti';
+import WhatsAppFloat from '../components/shared/WhatsAppFloat';
 
 const FullExperience = () => {
     const {
@@ -39,7 +44,6 @@ const FullExperience = () => {
         playUIClick,
         playQuizSelect,
         playComboReveal,
-        handleCelebration,
         handleGenerateDirective,
         showServiceModal,
         showHackModal,
@@ -92,13 +96,12 @@ const FullExperience = () => {
             <KitMagistralRPG onOpenModule={showHackModal} />
             <SrapRitual onActivate={showSrapModal} playUIClick={playUIClick} />
             <SRAPMetronome />
-            <CertificationsSection completedHacks={completedHacks} onCelebration={handleCelebration} />
             <TheCodex />
             <Testimonials />
             <PremiumServices onServiceClick={showServiceModal} playUIClick={playUIClick} />
             <ContactForm />
             <CertifiedTech />
-             <Faq />
+            <Faq />
 
             <Footer />
             <ModalManager />

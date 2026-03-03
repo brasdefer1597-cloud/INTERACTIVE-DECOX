@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAppContext } from '../context/AppContext';
-import { HACKS_DATA, PODERES_SHEREZADE_DATA } from '../utils/constants';
-import { Hack, PoderDeSherezade } from '../utils/types';
-import PostPaymentPage from './PostPaymentPage';
-import DiscoverySessionPage from './DiscoverySessionPage';
-import KitMagistralSection from './KitMagistralSection';
-import TotalTransformationSection from './TotalTransformationSection';
+import { useAppContext } from '../../context/AppContext';
+import { PODERES_SHEREZADE_DATA } from '../../utils/constants';
+import { Hack, PoderDeSherezade } from '../../utils/types';
+import PostPaymentPage from '../services/PostPaymentPage';
+import DiscoverySessionPage from '../services/DiscoverySessionPage';
+import KitMagistralSection from '../services/KitMagistralSection';
+import TotalTransformationSection from '../services/TotalTransformationSection';
 
 const ModalManager = () => {
     const { modalState, hideModal, showServiceModal, handleTemplateInputChange, allTemplateInputs, toggleHackCompletion } = useAppContext();
