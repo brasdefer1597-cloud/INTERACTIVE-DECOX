@@ -40,6 +40,17 @@ export interface Hack {
   icon: string;
   amplificacionProfunda: AmplificacionProfunda;
   poderDeSherezadeId?: number;
+  miniReto?: string;
+  plantillaMetodologica?: PlantillaAspecto[];
+}
+
+export interface QuizQuestion {
+  id: number;
+  text: string;
+  options: {
+    text: string;
+    archetype: Archetype;
+  }[];
 }
 
 export interface Certification {
