@@ -422,6 +422,67 @@ export const CODICE_CONTENT = {
 
 export const RPG_MODULE_ORDER = [1, 2, 3, 4, 5, 6, 7, 8];
 
+export const COMBOS: { [key: string]: { name: string; description: string } } = {
+    "1-2": { name: "Narrativa Fractal", description: "Invocas una realidad robando un patrón de otra industria." },
+    "1-3": { name: "Paradoja Semántica", description: "Usas palabras para unir opuestos y crear un nuevo marco." },
+    "1-4": { name: "Subtexto Invocado", description: "Nombras el silencio para forzar una respuesta." },
+    "1-5": { name: "Lenguaje del Caos", description: "Doblas las reglas del relato para revelar debilidades." },
+    "1-6": { name: "Metáfora de Datos", description: "Usas el lenguaje para interpretar correlaciones frías." },
+    "1-7": { name: "Deseo Articulado", description: "Transformas la ambición cruda en una historia irresistible." },
+    "1-8": { name: "Profecía Autocumplida", description: "Nombras el futuro para que empiece a suceder hoy." },
+    "2-3": { name: "Fusión de Sistemas", description: "Robas patrones opuestos y los integras en una nueva vía." },
+    "2-4": { name: "Exploit Fractal", description: "Encuentras el mismo incentivo oculto en múltiples industrias." },
+    "2-5": { name: "Caos Estructural", description: "Introduces desorden copiando el modelo de la naturaleza." },
+    "2-6": { name: "Patrón Correlacionado", description: "Descubres que los mismos datos resuelven problemas distintos." },
+    "2-7": { name: "Deseo Replicado", description: "Imitas el juego infantil en un contexto de alto riesgo." },
+    "2-8": { name: "Historia Anticipada", description: "Estudias el pasado para robar la solución del futuro." },
+    "3-4": { name: "Silencio Absurdo", description: "Sostienes la tensión de no responder la pregunta obvia." },
+    "3-5": { name: "Equilibrio Inestable", description: "Usas el caos para forzar la creación de una tercera vía." },
+    "3-6": { name: "Datos Paradójicos", description: "Encuentras la verdad en la contradicción de dos métricas." },
+    "3-7": { name: "Ambición Equilibrada", description: "Unes el deseo visceral con la estructura lógica." },
+    "3-8": { name: "Visión Dialéctica", description: "Anticipas dos futuros opuestos para prepararte para el tercero." },
+    "4-5": { name: "Hackeo Trixter", description: "Manipulas los incentivos ocultos mediante el caos controlado." },
+    "4-6": { name: "Datos Silenciosos", description: "Escuchas lo que las métricas omiten en lugar de lo que dicen." },
+    "4-7": { name: "Deseo Inconfesable", description: "Descubres la verdadera ambición detrás del silencio." },
+    "4-8": { name: "Anticipación Oculta", description: "Predices el futuro leyendo las reglas no escritas del presente." },
+    "5-6": { name: "Caos Cuantificado", description: "Mides la adaptabilidad del sistema al introducir desorden." },
+    "5-7": { name: "Fuego Mutante", description: "Abandonas tu identidad actual para jugar con una nueva." },
+    "5-8": { name: "Metamorfosis Futura", description: "Matas tu identidad hoy para renacer en el escenario de mañana." },
+    "6-7": { name: "Pasión Basada en Datos", description: "Validas tu intuición visceral con correlaciones empíricas." },
+    "6-8": { name: "Predicción Algorítmica", description: "Usas datos fríos para trazar el mapa del futuro." },
+    "7-8": { name: "Genio Visionario", description: "Proyectas tu deseo más puro en un escenario de 5 años." }
+};
+
+export const CERTIFICATIONS_DATA: Certification[] = [
+    {
+        id: 1,
+        title: "Ingeniero de Realidad",
+        icon: 'fa-solid fa-cube',
+        color: 'text-blue-400',
+        requiredHacks: [1, 2, 8],
+        description: "Maestría en la construcción y anticipación de sistemas.",
+        srap: "Pausa para diseñar antes de ejecutar."
+    },
+    {
+        id: 2,
+        title: "Alquimista Narrativo",
+        icon: 'fa-solid fa-flask',
+        color: 'text-green-400',
+        requiredHacks: [1, 3, 5],
+        description: "Control absoluto sobre el encuadre y la transformación.",
+        srap: "Reconoce la emoción antes de reaccionar."
+    },
+    {
+        id: 3,
+        title: "Explorador de Patrones",
+        icon: 'fa-solid fa-compass',
+        color: 'text-purple-400',
+        requiredHacks: [2, 4, 7],
+        description: "Habilidad para encontrar exploits y conectar lo desconectado.",
+        srap: "Sincroniza tu curiosidad con la acción."
+    }
+];
+
 export const RPG_MODULES_DATA: { [key: number]: any } = {
     1: {
         title: "Nivel 1: El Despertar de la Palabra",
