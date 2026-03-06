@@ -21,7 +21,7 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
 
     const completedCount = completedHacks.size;
     const masteryLevel = completedCount <= 2 ? 'Novato' : completedCount <= 5 ? 'Adepto' : 'Maestro';
-    const certsUnlocked = CERTIFICATIONS_DATA.filter(c => c.requiredHacks.every(hId => completedHacks.has(hId))).length;
+    const certsUnlocked = CERTIFICATIONS_DATA.filter((c: any) => c.requiredHacks.every((hId: number) => completedHacks.has(hId))).length;
 
     const securityStatusMap = [
         { level: 'Sistema Vulnerable', icon: 'fa-shield-virus', color: 'text-red-500' },
