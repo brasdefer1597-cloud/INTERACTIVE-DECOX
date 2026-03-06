@@ -420,6 +420,42 @@ export const CODICE_CONTENT = {
     }
 };
 
+export const COMBOS: { [key: string]: { name: string; description: string } } = {
+    "1-2": {
+        name: "El Arquitecto Narrativo",
+        description: "Al unir el Poder de la Palabra y el Poder del Relato, no solo describes una solución, construyes un mundo entero donde esa solución es la única opción lógica."
+    },
+    "3-4": {
+        name: "El Creador Imposible",
+        description: "Fusionando el Equilibrio y el Escucha, encuentras verdades ocultas en paradojas, permitiéndote diseñar soluciones que otros ni siquiera pueden concebir."
+    },
+    "5-7": {
+        name: "El Renacido Apasionado",
+        description: "Metamorfosis y Deseo juntos te permiten destruir tu vieja identidad no por miedo, sino impulsado por un fuego interno incontrolable hacia algo más grande."
+    }
+};
+
+export const CERTIFICATIONS_DATA: Certification[] = [
+    {
+        id: 1,
+        title: "Arquitecto de Realidades",
+        icon: "fa-solid fa-city",
+        color: "text-blue-400",
+        requiredHacks: [1, 3, 6],
+        description: "Certificación para aquellos que dominan la estructura, los datos y la narrativa para construir sistemas inquebrantables.",
+        srap: "Sincroniza datos, Reconoce patrones, Activa la estructura, Pausa para iterar."
+    },
+    {
+        id: 2,
+        title: "Alquimista del Caos",
+        icon: "fa-solid fa-flask",
+        color: "text-purple-400",
+        requiredHacks: [2, 5, 7],
+        description: "Para los que transmutan la energía bruta y el desorden en oro táctico, doblando las reglas a su favor.",
+        srap: "Sincroniza la emoción, Reconoce la oportunidad en el caos, Activa el cambio, Pausa para asimilar."
+    }
+];
+
 export const RPG_MODULE_ORDER = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const RPG_MODULES_DATA: { [key: number]: any } = {
