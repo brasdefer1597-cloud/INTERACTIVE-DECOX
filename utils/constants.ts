@@ -422,6 +422,12 @@ export const CODICE_CONTENT = {
 
 export const RPG_MODULE_ORDER = [1, 2, 3, 4, 5, 6, 7, 8];
 
+export const COMBOS: any = {
+    "1,2": { name: "Combo Inicial", description: "La base de todo." }
+};
+
+export const CERTIFICATIONS_DATA: any[] = [];
+
 export const RPG_MODULES_DATA: { [key: number]: any } = {
     1: {
         title: "Nivel 1: El Despertar de la Palabra",

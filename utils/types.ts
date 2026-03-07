@@ -38,6 +38,8 @@ export interface Hack {
   ejercicio: string;
   colorClass: string;
   icon: string;
+  miniReto: string;
+  plantillaMetodologica?: any;
   amplificacionProfunda: AmplificacionProfunda;
   poderDeSherezadeId?: number;
 }
@@ -56,4 +58,20 @@ export interface ModalState {
   isOpen: boolean;
   type: 'hack' | 'srap' | 'total' | 'discovery' | 'magistral' | 'postPayment' | 'activation' | null;
   data?: any;
+}
+
+export interface QuizQuestion {
+  id: number;
+  text: string;
+  options: {
+    text: string;
+    archetype: Archetype;
+  }[];
+}
+
+export interface Combo {
+  id: string;
+  name: string;
+  hacks: number[];
+  description: string;
 }
