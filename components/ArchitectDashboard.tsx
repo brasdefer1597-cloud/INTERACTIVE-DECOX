@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Archetype } from '../utils/types';
+import { Archetype, PurchasedService } from '../utils/types';
 import { CERTIFICATIONS_DATA, HACKS_DATA } from '../utils/constants';
 
 interface ArchitectDashboardProps {
     completedHacks: Set<number>;
+    earnedCerts: Set<number>;
     dominantArchetype: Archetype | null;
     onGenerateDirective: () => void;
     aiDirective: string;
     isDirectiveLoading: boolean;
+    purchasedServices: PurchasedService[];
 }
 
 const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
     completedHacks,
+    earnedCerts,
     dominantArchetype,
     onGenerateDirective,
     aiDirective,
     isDirectiveLoading,
+    purchasedServices,
 }) => {
     const [displayedDirective, setDisplayedDirective] = useState("Solicita una directiva para tu próximo movimiento estratégico...");
 
     const completedCount = completedHacks.size;
-    const masteryLevel = completedCount <= 2 ? 'Novato' : completedCount <= 5 ? 'Adepto' : 'Maestro';
-    const certsUnlocked = CERTIFICATIONS_DATA.filter(c => c.requiredHacks.every(hId => completedHacks.has(hId))).length;
+    const certsUnlocked = earnedCerts.size;
+
+    const levels = [
+        { name: 'Iniciado', min: 0, max: 2, color: 'text-gray-400', bg: 'bg-gray-400' },
+        { name: 'Decodificador', min: 3, max: 5, color: 'text-emerald-400', bg: 'bg-emerald-400' },
+        { name: 'Arquitecto de Realidad', min: 6, max: 8, color: 'text-blue-400', bg: 'bg-blue-400' },
+        { name: 'Alquimista Maestro', min: 9, max: 11, color: 'text-purple-400', bg: 'bg-purple-400' },
+        { name: 'Chalamandra Magistral', min: 12, max: 99, color: 'text-yellow-400', bg: 'bg-yellow-400' }
+    ];
+
+    const currentLevel = levels.find(l => completedCount >= l.min && completedCount <= l.max) || levels[0];
+    const nextLevel = levels[levels.indexOf(currentLevel) + 1];
+    const progressToNext = nextLevel ? ((completedCount - currentLevel.min) / (nextLevel.min - currentLevel.min)) * 100 : 100;
 
     const securityStatusMap = [
         { level: 'Sistema Vulnerable', icon: 'fa-shield-virus', color: 'text-red-500' },
@@ -50,6 +65,24 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
         }
     }, [aiDirective, isDirectiveLoading]);
 
+    const getServiceIcon = (type: string) => {
+        switch (type) {
+            case 'discovery': return 'fa-calendar-check text-yellow-400';
+            case 'magistral': return 'fa-box-open text-purple-400';
+            case 'total': return 'fa-infinity text-pink-400';
+            default: return 'fa-gear';
+        }
+    };
+
+    const getServiceAction = (type: string) => {
+        switch (type) {
+            case 'discovery': return { label: 'AGENDAR', link: 'https://calendly.com/chalamandra/discovery' };
+            case 'magistral': return { label: 'ACCEDER', link: '#' };
+            case 'total': return { label: 'CONTACTAR', link: 'https://wa.me/yournumber' };
+            default: return { label: 'VER', link: '#' };
+        }
+    };
+
     return (
         <section id="dashboard" className="py-20 px-6 max-w-6xl mx-auto">
             <h2 className="text-4xl font-black text-center mb-6 text-white">
@@ -72,8 +105,22 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
                             <p className="text-sm font-semibold text-gray-400">Certificaciones</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-2xl font-black text-yellow-400">{masteryLevel.toUpperCase()}</p>
-                            <p className="text-sm font-semibold text-gray-400">Nivel de Maestría</p>
+                            <p className={`text-2xl font-black ${currentLevel.color} glitch-text`} data-text={currentLevel.name.toUpperCase()}>
+                                {currentLevel.name.toUpperCase()}
+                            </p>
+                            <p className="text-sm font-semibold text-gray-400 mb-2">Rango de Maestría</p>
+                            
+                            {nextLevel && (
+                                <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden mt-2">
+                                    <div 
+                                        className={`h-full ${currentLevel.bg} transition-all duration-1000`} 
+                                        style={{ width: `${progressToNext}%` }}
+                                    ></div>
+                                </div>
+                            )}
+                            <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">
+                                {nextLevel ? `Próximo Rango: ${nextLevel.name}` : 'Nivel Máximo Alcanzado'}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -116,6 +163,81 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
                                 {isDirectiveLoading ? 'DECODIFICANDO...' : 'GENERAR DIRECTIVA'}
                          </button>
                      </div>
+                </div>
+
+                {/* Purchased Services Section */}
+                {purchasedServices.length > 0 && (
+                    <div className="dashboard-widget lg:col-span-3">
+                        <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center">
+                            <i className="fa-solid fa-box-open mr-2"></i>MIS PROTOCOLOS ACTIVOS
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {purchasedServices.map((service, idx) => {
+                                const action = getServiceAction(service.type);
+                                return (
+                                    <div key={idx} className="bg-black/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
+                                        <div className="flex items-center">
+                                            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl mr-4">
+                                                <i className={`fa-solid ${getServiceIcon(service.type)}`}></i>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-white uppercase">{service.type}</h4>
+                                                <p className="text-[10px] text-gray-500">Adquirido: {new Date(service.date).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <a 
+                                            href={action.link} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-[10px] font-black rounded-lg transition-all"
+                                        >
+                                            {action.label}
+                                        </a>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Digital Certifications Section */}
+                <div className="dashboard-widget lg:col-span-3">
+                    <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center">
+                        <i className="fa-solid fa-award mr-2"></i>CERTIFICACIONES DIGITALES
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                        {CERTIFICATIONS_DATA.map((cert) => {
+                            const isEarned = earnedCerts.has(cert.id);
+                            return (
+                                <div 
+                                    key={cert.id}
+                                    className={`relative p-6 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center group ${
+                                        isEarned 
+                                        ? 'bg-white/5 border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.05)]' 
+                                        : 'bg-black/40 border-white/5 opacity-40 grayscale'
+                                    }`}
+                                >
+                                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 text-3xl ${isEarned ? cert.color : 'text-gray-600'}`}>
+                                        <i className={cert.icon}></i>
+                                    </div>
+                                    <h4 className={`font-black text-sm mb-2 ${isEarned ? 'text-white' : 'text-gray-500'}`}>{cert.title.toUpperCase()}</h4>
+                                    <p className="text-[10px] text-gray-500 font-medium leading-tight">{cert.description}</p>
+                                    
+                                    {isEarned && (
+                                        <div className="mt-4 pt-4 border-t border-white/10 w-full">
+                                            <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase">SRAP: {cert.srap}</span>
+                                        </div>
+                                    )}
+
+                                    {!isEarned && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <span className="text-[10px] font-black text-white tracking-widest uppercase">BLOQUEADO</span>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
         </section>

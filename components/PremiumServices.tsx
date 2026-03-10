@@ -21,7 +21,10 @@ const PremiumServices: React.FC<PremiumServicesProps> = ({ onServiceClick, playU
                         <h3 className="text-3xl font-bold text-yellow-300 mb-4">Sesión Descubrimiento</h3>
                         <p className="text-5xl font-black text-white mb-4">$27 <span className="text-lg font-semibold text-gray-400">USD</span></p>
                         <p className="text-gray-300 flex-grow">Una inmersión de 90 minutos para diagnosticar tu arquetipo y trazar tu mapa de ruta inicial.</p>
-                        <button onClick={() => { playUIClick(); onServiceClick('discovery'); }} className="mt-8 w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                        <div className="mt-8 space-y-3">
+                            <button onClick={() => { playUIClick(); onServiceClick('discovery'); }} className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                            <a href="?payment_success=true&service=discovery" className="block w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-3 rounded-lg transition-colors shadow-lg">ADQUIRIR AHORA</a>
+                        </div>
                     </div>
 
                     {/* Kit Magistral */}
@@ -29,7 +32,10 @@ const PremiumServices: React.FC<PremiumServicesProps> = ({ onServiceClick, playU
                         <h3 className="text-3xl font-bold text-purple-300 mb-4">Kit Magistral</h3>
                         <p className="text-5xl font-black text-white mb-4">$397 <span className="text-lg font-semibold text-gray-400">USD</span></p>
                         <p className="text-gray-300 flex-grow">Un mes de implementación intensiva. 4 sesiones para instalar tus hacks fundamentales y soporte directo.</p>
-                         <button onClick={() => { playUIClick(); onServiceClick('magistral'); }} className="mt-8 w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                        <div className="mt-8 space-y-3">
+                            <button onClick={() => { playUIClick(); onServiceClick('magistral'); }} className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                            <a href="?payment_success=true&service=magistral" className="block w-full bg-purple-600 hover:bg-purple-500 text-white font-black py-3 rounded-lg transition-colors shadow-lg">ADQUIRIR AHORA</a>
+                        </div>
                     </div>
 
                     {/* Total Transformation */}
@@ -37,7 +43,10 @@ const PremiumServices: React.FC<PremiumServicesProps> = ({ onServiceClick, playU
                         <h3 className="text-3xl font-bold text-pink-300 mb-4">Transformación Total</h3>
                         <p className="text-5xl font-black text-white mb-4">$1500+ <span className="text-lg font-semibold text-gray-400">USD</span></p>
                         <p className="text-gray-300 flex-grow">Un programa de 3 a 6 meses para la reingeniería completa de tu sistema operativo. Solo por aplicación.</p>
-                         <button onClick={() => { playUIClick(); onServiceClick('total'); }} className="mt-8 w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                        <div className="mt-8 space-y-3">
+                            <button onClick={() => { playUIClick(); onServiceClick('total'); }} className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-lg transition-colors">Saber Más</button>
+                            <a href="?payment_success=true&service=total" className="block w-full bg-pink-600 hover:bg-pink-500 text-white font-black py-3 rounded-lg transition-colors shadow-lg">ADQUIRIR AHORA</a>
+                        </div>
                     </div>
                 </div>
             </div>

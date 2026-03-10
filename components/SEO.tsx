@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 interface SEOProps {
   title?: string;
   description?: string;
+  keywords?: string;
   canonical?: string;
   ogType?: string;
   ogImage?: string;
@@ -16,7 +17,8 @@ interface SEOProps {
  */
 const SEO: React.FC<SEOProps> = ({
   title = "Chalamandra Magistral | Sistema Operativo del 1%",
-  description = "Decodifica tu realidad y desmantela tus límites con Chalamandra Magistral. Hacks cognitivos y estrategia táctica para el alto rendimiento.",
+  description = "Domina el Grimorio Táctico: fusión cognitiva, modelos mentales y ventaja estratégica. Decodifica tu realidad y desmantela tus límites con Chalamandra Magistral.",
+  keywords = "cognitive fusion, mental models, strategic advantage, alto rendimiento, hacks cognitivos, chalamandra magistral",
   canonical = "https://chalamandramagistral.com",
   ogType = "website",
   ogImage = "https://chalamandramagistral.com/og-image.jpg",
@@ -27,6 +29,7 @@ const SEO: React.FC<SEOProps> = ({
       {/* Standard Metadata */}
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
       <link rel="canonical" href={canonical} />
 
       {/* Open Graph (Facebook/LinkedIn) */}

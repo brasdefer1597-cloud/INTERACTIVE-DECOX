@@ -40,6 +40,19 @@ export interface Hack {
   icon: string;
   amplificacionProfunda: AmplificacionProfunda;
   poderDeSherezadeId?: number;
+  miniReto: string;
+  plantillaMetodologica: PlantillaAspecto[];
+}
+
+export interface QuizOption {
+    text: string;
+    archetype: Archetype;
+}
+
+export interface QuizQuestion {
+    id: number;
+    text: string;
+    options: QuizOption[];
 }
 
 export interface Certification {
@@ -52,8 +65,16 @@ export interface Certification {
   srap: string;
 }
 
+export type ServiceType = 'discovery' | 'magistral' | 'total';
+
 export interface ModalState {
   isOpen: boolean;
   type: 'hack' | 'srap' | 'total' | 'discovery' | 'magistral' | 'postPayment' | 'activation' | null;
   data?: any;
+}
+
+export interface PurchasedService {
+    type: ServiceType;
+    date: string;
+    status: 'pending' | 'active' | 'completed';
 }

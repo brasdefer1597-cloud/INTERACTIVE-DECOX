@@ -388,6 +388,42 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
             { text: "La irrelevancia narrativa y el aburrimiento.", archetype: "El Alquimista" },
             { text: "La rigidez sistémica y la falta de libertad para innovar.", archetype: "El Explorador" }
         ]
+    },
+    {
+        id: 7,
+        text: "¿Cómo manejas el fracaso o un error crítico?",
+        options: [
+            { text: "Registro el error en el sistema para evitar que se repita.", archetype: "El Arquitecto" },
+            { text: "Reencuadro el fracaso como una lección necesaria para la gran historia.", archetype: "El Alquimista" },
+            { text: "Pivoto rápidamente hacia una nueva dirección sin mirar atrás.", archetype: "El Explorador" }
+        ]
+    },
+    {
+        id: 8,
+        text: "¿Qué valoras más en una relación profesional?",
+        options: [
+            { text: "La fiabilidad y el cumplimiento de los procesos.", archetype: "El Arquitecto" },
+            { text: "La conexión emocional y la visión compartida.", archetype: "El Alquimista" },
+            { text: "La flexibilidad y la capacidad de improvisar juntos.", archetype: "El Explorador" }
+        ]
+    },
+    {
+        id: 9,
+        text: "¿Cómo tomas decisiones importantes?",
+        options: [
+            { text: "Basándome en datos históricos y proyecciones lógicas.", archetype: "El Arquitecto" },
+            { text: "Siguiendo mi intuición y el potencial narrativo del resultado.", archetype: "El Alquimista" },
+            { text: "Experimentando con opciones pequeñas antes de comprometerme.", archetype: "El Explorador" }
+        ]
+    },
+    {
+        id: 10,
+        text: "¿Cuál es tu enfoque ante la competencia?",
+        options: [
+            { text: "Superarlos mediante una infraestructura más eficiente y sólida.", archetype: "El Arquitecto" },
+            { text: "Volverlos irrelevantes creando una categoría única en la mente del cliente.", archetype: "El Alquimista" },
+            { text: "Encontrar los huecos en su estrategia y explotarlos creativamente.", archetype: "El Explorador" }
+        ]
     }
 ];
 
@@ -486,5 +522,76 @@ export const RPG_MODULES_DATA: { [key: number]: any } = {
         objective: "Escribir el futuro antes de que ocurra.",
         story: "El tiempo no es una línea, es una construcción que tú puedes diseñar.",
         twist: { type: 'power-up', title: 'Ojo del Mañana', content: 'Ves las consecuencias de cada acción con 5 años de antelación.' }
+    }
+};
+
+export const CERTIFICATIONS_DATA: Certification[] = [
+    {
+        id: 1,
+        title: "Iniciado del 1%",
+        icon: "fa-solid fa-seedling",
+        color: "text-emerald-400",
+        requiredHacks: [], // Special logic: any 3 hacks
+        description: "Has dado tus primeros pasos en la decodificación de la realidad.",
+        srap: "Sincronización Inicial"
+    },
+    {
+        id: 2,
+        title: "Arquitecto de Realidades",
+        icon: "fa-solid fa-city",
+        color: "text-blue-400",
+        requiredHacks: [1, 2, 3],
+        description: "Dominas el lenguaje, los patrones y la paradoja.",
+        srap: "Reconocimiento Estructural"
+    },
+    {
+        id: 3,
+        title: "Maestro del Caos",
+        icon: "fa-solid fa-fire-alt",
+        color: "text-orange-400",
+        requiredHacks: [4, 5],
+        description: "Escuchas las sombras e inyectas caos con precisión quirúrgica.",
+        srap: "Activación Disruptiva"
+    },
+    {
+        id: 4,
+        title: "Visionario Predictivo",
+        icon: "fa-solid fa-eye",
+        color: "text-purple-400",
+        requiredHacks: [6, 7, 8],
+        description: "Ves a través de los datos y el deseo para anticipar el futuro.",
+        srap: "Pausa Predictiva"
+    },
+    {
+        id: 5,
+        title: "Chalamandra Magistral",
+        icon: "fa-solid fa-dragon",
+        color: "text-yellow-400",
+        requiredHacks: [1, 2, 3, 4, 5, 6, 7, 8],
+        description: "Has alcanzado la maestría total del sistema operativo Chalamandra.",
+        srap: "Sincronía Total"
+    }
+];
+
+export const COMBOS: { [key: string]: { name: string; description: string } } = {
+    "1-2": {
+        name: "El Narrador Fractal",
+        description: "Fusionas el poder de la palabra con el robo de patrones. No solo cuentas una historia, cuentas la historia que el sistema ya está predispuesto a aceptar porque resuena con sus patrones ocultos."
+    },
+    "1-3": {
+        name: "La Paradoja Elocuente",
+        description: "Usas el lenguaje para sostener opuestos. Creas una narrativa que es a la vez disruptiva y estructurada, forzando a tu audiencia a una nueva síntesis mental que tú controlas."
+    },
+    "2-4": {
+        name: "El Hacker de Estructuras",
+        description: "Identificas el patrón fractal y escuchas el subtexto. Encuentras la debilidad estructural no por lo que ves, sino por lo que el sistema intenta ocultar en sus silencios."
+    },
+    "4-5": {
+        name: "El Infiltrado del Caos",
+        description: "Escuchas las sombras para saber exactamente dónde inyectar el caos. Tu disrupción no es aleatoria; es un bisturí que corta el nervio central de la inercia sistémica."
+    },
+    "6-8": {
+        name: "El Arquitecto Algorítmico",
+        description: "Combinas la frialdad de los datos con la visión predictiva. Tu anticipación no es una corazonada, es una proyección matemática de la realidad que te permite actuar años antes que la competencia."
     }
 };

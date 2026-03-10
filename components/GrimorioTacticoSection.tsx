@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PODERES_SHEREZADE_DATA } from '../utils/constants';
 import { generateAlchemicalCombo } from '../services/geminiService';
+import { motion, AnimatePresence } from 'motion/react';
 
 const GRIMORIO_INPUTS_KEY = 'grimorioTemplateInputs';
 const COMBO_INPUTS_KEY = 'grimorioComboInputs';
 
 const GrimorioTacticoSection: React.FC = () => {
     const [templateInputs, setTemplateInputs] = useState<{ [key: string]: { [key: string]: string } }>({});
-    const [comboPoder1, setComboPoder1] = useState('');
-    const [comboPoder2, setComboPoder2] = useState('');
+    const [comboPoder1Id, setComboPoder1Id] = useState<number | null>(null);
+    const [comboPoder2Id, setComboPoder2Id] = useState<number | null>(null);
     const [comboResultado, setComboResultado] = useState('');
     const [isForging, setIsForging] = useState(false);
+    const [activePoderId, setActivePoderId] = useState<number | null>(null);
 
     useEffect(() => {
         const savedGrimorioInputs = localStorage.getItem(GRIMORIO_INPUTS_KEY);
@@ -19,11 +21,23 @@ const GrimorioTacticoSection: React.FC = () => {
         }
         const savedComboInputs = localStorage.getItem(COMBO_INPUTS_KEY);
         if (savedComboInputs) {
-            const { poder1, poder2 } = JSON.parse(savedComboInputs);
-            setComboPoder1(poder1 || '');
-            setComboPoder2(poder2 || '');
+            const { p1Id, p2Id, result } = JSON.parse(savedComboInputs);
+            setComboPoder1Id(p1Id || null);
+            setComboPoder2Id(p2Id || null);
+            setComboResultado(result || '');
         }
     }, []);
+
+    const progress = useMemo(() => {
+        const totalFields = PODERES_SHEREZADE_DATA.reduce((acc, p) => acc + p.plantilla.length, 0);
+        let filledFields = 0;
+        Object.values(templateInputs).forEach(poderInputs => {
+            Object.values(poderInputs).forEach(val => {
+                if (val.trim()) filledFields++;
+            });
+        });
+        return Math.round((filledFields / totalFields) * 100);
+    }, [templateInputs]);
 
     const handleInputChange = (poderId: number, aspecto: string, value: string) => {
         setTemplateInputs(prev => {
@@ -39,26 +53,24 @@ const GrimorioTacticoSection: React.FC = () => {
         });
     };
 
-    const handleComboInputChange = (poder: 'poder1' | 'poder2', value: string) => {
-        if (poder === 'poder1') {
-            setComboPoder1(value);
-        } else {
-            setComboPoder2(value);
-        }
-        const newComboInputs = {
-            poder1: poder === 'poder1' ? value : comboPoder1,
-            poder2: poder === 'poder2' ? value : comboPoder2,
-        };
-        localStorage.setItem(COMBO_INPUTS_KEY, JSON.stringify(newComboInputs));
-    };
-    
     const handleForjarCombo = async () => {
-        if (!comboPoder1 || !comboPoder2 || isForging) return;
+        if (comboPoder1Id === null || comboPoder2Id === null || isForging) return;
+        
+        const p1 = PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder1Id);
+        const p2 = PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder2Id);
+        
+        if (!p1 || !p2) return;
+
         setIsForging(true);
         setComboResultado('');
         try {
-            const resultado = await generateAlchemicalCombo(comboPoder1, comboPoder2);
+            const resultado = await generateAlchemicalCombo(p1.title, p2.title);
             setComboResultado(resultado);
+            localStorage.setItem(COMBO_INPUTS_KEY, JSON.stringify({
+                p1Id: comboPoder1Id,
+                p2Id: comboPoder2Id,
+                result: resultado
+            }));
         } catch (error) {
             console.error("Error forging combo:", error);
             setComboResultado("Error: Fusión fallida. Los ingredientes son inestables.");
@@ -67,107 +79,257 @@ const GrimorioTacticoSection: React.FC = () => {
         }
     };
 
+    const togglePoderSelection = (id: number) => {
+        if (comboPoder1Id === id) {
+            setComboPoder1Id(null);
+        } else if (comboPoder2Id === id) {
+            setComboPoder2Id(null);
+        } else if (comboPoder1Id === null) {
+            setComboPoder1Id(id);
+        } else if (comboPoder2Id === null) {
+            setComboPoder2Id(id);
+        } else {
+            // Replace the first one if both are full
+            setComboPoder1Id(id);
+        }
+    };
+
     return (
-        <section className="py-20 px-6 max-w-5xl mx-auto">
-            <h2 className="text-4xl font-black text-center mb-6 text-yellow-300">
-                <i className="fa-solid fa-book-skull mr-3"></i>GRIMORIO TÁCTICO: EL ARTE DE LA FUSIÓN
-            </h2>
-            <p className="text-xl text-center text-gray-300 mb-16 italic">
-                La maestría no es dominar un poder, es fusionarlos. Usa estas plantillas interactivas para forjar tu propia ventaja injusta y documentar tu progreso.
-            </p>
-            
+        <section id="grimorio" className="py-32 px-6 bg-black relative overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-            <div className="space-y-12">
-                {PODERES_SHEREZADE_DATA.map((poder) => (
-                    <div key={poder.id} className="dashboard-widget p-6 border-l-4 border-gray-600 hover:border-yellow-400">
-                        <div className="flex items-center mb-6">
-                             <span className="text-4xl mr-4">{poder.icon}</span>
-                             <div>
-                                <h3 className="text-2xl font-bold text-white">{poder.title}</h3>
-                                <p className="text-yellow-300 font-semibold italic">Misión: {poder.proposito}</p>
-                             </div>
+            <div className="max-w-6xl mx-auto relative z-10">
+                <header className="text-center mb-24 space-y-6">
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="inline-block px-4 py-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-yellow-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4"
+                    >
+                        Laboratorio de Alquimia Cognitiva
+                    </motion.div>
+                    <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase">
+                        Grimorio <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Táctico</span>
+                    </h2>
+                    <p className="text-xl text-gray-400 max-w-3xl mx-auto font-medium leading-relaxed">
+                        La maestría no es dominar un poder, es fusionarlos. Documenta tu progreso y forja tu propia ventaja injusta.
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className="max-w-md mx-auto pt-8 space-y-2">
+                        <div className="flex justify-between text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                            <span>Sincronización del Grimorio</span>
+                            <span className="text-yellow-500">{progress}%</span>
                         </div>
+                        <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                className="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.4)]"
+                            />
+                        </div>
+                    </div>
+                </header>
 
-                        <div className="mb-6 space-y-4 pl-3 border-l-2 border-gray-700">
-                            <p className="text-gray-300 text-lg leading-relaxed">{poder.poder}</p>
-                            <div className="bg-gray-800/60 p-4 rounded-lg">
-                                <p className="text-sm font-bold text-yellow-400 mb-1">EJEMPLO DE USO:</p>
-                                <p className="text-gray-300 italic" dangerouslySetInnerHTML={{ __html: poder.ejemploDeUso }}></p>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Left: Power List & Templates */}
+                    <div className="lg:col-span-7 space-y-6">
+                        <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.4em] mb-8">Poderes de Sherezade</h3>
+                        {PODERES_SHEREZADE_DATA.map((poder) => {
+                            const isActive = activePoderId === poder.id;
+                            const isSelected = comboPoder1Id === poder.id || comboPoder2Id === poder.id;
+                            const isFilled = Object.values(templateInputs[poder.id] || {}).some(v => v.trim());
+
+                            return (
+                                <motion.article 
+                                    key={poder.id}
+                                    layout
+                                    className={`group relative bg-gray-900/40 border-2 rounded-[2.5rem] transition-all duration-500 overflow-hidden ${
+                                        isActive ? 'border-yellow-500/50 shadow-2xl' : isSelected ? 'border-purple-500/50' : 'border-white/5 hover:border-white/10'
+                                    }`}
+                                >
+                                    <div 
+                                        onClick={() => setActivePoderId(isActive ? null : poder.id)}
+                                        className="p-8 cursor-pointer flex items-center justify-between"
+                                    >
+                                        <div className="flex items-center gap-6">
+                                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl transition-all duration-500 ${
+                                                isActive ? 'bg-yellow-500 text-black scale-110' : 'bg-white/5 text-white group-hover:bg-white/10'
+                                            }`}>
+                                                {poder.icon}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-2xl font-black text-white uppercase tracking-tighter">{poder.title}</h4>
+                                                <div className="flex items-center gap-3 mt-1">
+                                                    <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">{poder.clave}</span>
+                                                    {isFilled && <i className="fa-solid fa-circle-check text-green-500 text-[10px]"></i>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); togglePoderSelection(poder.id); }}
+                                                className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${
+                                                    isSelected ? 'bg-purple-500 border-purple-400 text-white' : 'border-white/10 text-gray-600 hover:border-purple-500/50 hover:text-purple-400'
+                                                }`}
+                                                title="Seleccionar para Combo"
+                                            >
+                                                <i className="fa-solid fa-flask"></i>
+                                            </button>
+                                            <i className={`fa-solid fa-chevron-down text-gray-600 transition-transform duration-500 ${isActive ? 'rotate-180 text-yellow-500' : ''}`}></i>
+                                        </div>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        {isActive && (
+                                            <motion.div 
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                className="px-8 pb-8 space-y-8 border-t border-white/5 pt-8"
+                                            >
+                                                <div className="space-y-4">
+                                                    <p className="text-gray-400 leading-relaxed text-lg italic">"{poder.poder}"</p>
+                                                    <div className="p-6 bg-black/40 rounded-3xl border border-white/5">
+                                                        <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest block mb-2">Protocolo de Uso:</span>
+                                                        <p className="text-white text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: poder.ejemploDeUso }}></p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-6">
+                                                    {poder.plantilla.map(item => (
+                                                        <div key={item.aspecto} className="space-y-2">
+                                                            <div className="flex justify-between items-end">
+                                                                <label className="text-xs font-black text-white uppercase tracking-widest">{item.aspecto}</label>
+                                                                <span className="text-[10px] text-gray-600 italic">{item.guia}</span>
+                                                            </div>
+                                                            <textarea 
+                                                                rows={2}
+                                                                value={templateInputs[poder.id]?.[item.aspecto] || ''}
+                                                                onChange={(e) => handleInputChange(poder.id, item.aspecto, e.target.value)}
+                                                                placeholder="Escribe tu táctica..."
+                                                                className="w-full bg-black/50 border border-white/10 rounded-2xl p-4 text-white focus:border-yellow-500 outline-none transition-all resize-none"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                <div className="p-6 bg-red-500/5 border border-red-500/20 rounded-3xl flex items-start gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 shrink-0">
+                                                        <i className="fa-solid fa-bolt"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Mini Reto de Activación</h5>
+                                                        <p className="text-white text-sm font-bold">{poder.miniReto}</p>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.article>
+                            );
+                        })}
+                    </div>
+
+                    {/* Right: The Forge */}
+                    <div className="lg:col-span-5">
+                        <div className="sticky top-32 space-y-8">
+                            <div className="bg-gradient-to-br from-gray-900 to-black p-10 rounded-[3rem] border-2 border-purple-500/20 shadow-2xl relative overflow-hidden group">
+                                {/* Animated Background */}
+                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
+                                <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-[60px] group-hover:bg-purple-500/20 transition-all duration-1000"></div>
+
+                                <div className="relative z-10 space-y-8">
+                                    <div className="text-center">
+                                        <div className="w-20 h-20 bg-purple-500/10 rounded-[2rem] flex items-center justify-center text-4xl text-purple-400 mx-auto mb-6 border border-purple-500/20 shadow-[0_0_30px_rgba(168,85,247,0.15)]">
+                                            <i className={`fa-solid ${isForging ? 'fa-spinner fa-spin' : 'fa-flask-vial'}`}></i>
+                                        </div>
+                                        <h3 className="text-3xl font-black text-white uppercase tracking-tighter">La Forja Alquímica</h3>
+                                        <p className="text-sm text-gray-500 font-medium mt-2">Fusiona dos poderes para crear una ventaja injusta.</p>
+                                    </div>
+
+                                    <div className="flex items-center justify-center gap-4 py-8">
+                                        {/* Slot 1 */}
+                                        <div className={`w-24 h-24 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center transition-all duration-500 ${
+                                            comboPoder1Id ? 'bg-purple-500/10 border-purple-500/50 scale-110' : 'bg-black/40 border-white/10 text-gray-700'
+                                        }`}>
+                                            {comboPoder1Id ? (
+                                                <>
+                                                    <span className="text-3xl mb-1">{PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder1Id)?.icon}</span>
+                                                    <span className="text-[8px] font-black text-purple-400 uppercase text-center px-2 truncate w-full">
+                                                        {PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder1Id)?.title}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <i className="fa-solid fa-plus text-xl"></i>
+                                            )}
+                                        </div>
+
+                                        <div className="text-purple-500/50 text-2xl font-black">+</div>
+
+                                        {/* Slot 2 */}
+                                        <div className={`w-24 h-24 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center transition-all duration-500 ${
+                                            comboPoder2Id ? 'bg-purple-500/10 border-purple-500/50 scale-110' : 'bg-black/40 border-white/10 text-gray-700'
+                                        }`}>
+                                            {comboPoder2Id ? (
+                                                <>
+                                                    <span className="text-3xl mb-1">{PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder2Id)?.icon}</span>
+                                                    <span className="text-[8px] font-black text-purple-400 uppercase text-center px-2 truncate w-full">
+                                                        {PODERES_SHEREZADE_DATA.find(p => p.id === comboPoder2Id)?.title}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <i className="fa-solid fa-plus text-xl"></i>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        onClick={handleForjarCombo}
+                                        disabled={isForging || !comboPoder1Id || !comboPoder2Id}
+                                        className="w-full py-5 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-800 disabled:text-gray-600 text-white font-black text-xl rounded-2xl shadow-[0_20px_40px_rgba(168,85,247,0.2)] transition-all transform active:scale-95 flex items-center justify-center gap-3"
+                                    >
+                                        {isForging ? 'DECODIFICANDO...' : 'FORJAR COMBO'}
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {comboResultado && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="mt-8 p-6 bg-black/60 rounded-3xl border border-purple-500/30 space-y-4"
+                                            >
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">Resultado de la Fusión:</span>
+                                                    <i className="fa-solid fa-sparkles text-purple-400"></i>
+                                                </div>
+                                                <p className="text-white text-lg leading-relaxed italic font-medium">
+                                                    {comboResultado}
+                                                </p>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+
+                            {/* CTA Card */}
+                            <div className="bg-emerald-500/5 border border-emerald-500/20 p-8 rounded-[2.5rem] space-y-6 text-center">
+                                <h4 className="text-xl font-black text-white uppercase tracking-tighter">¿Buscas la Maestría Total?</h4>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    En la Sesión Descubrimiento, calibramos tus ingredientes para forjar los combos que realmente desintegran tus limitaciones.
+                                </p>
+                                <a 
+                                    href="https://ko-fi.com/s/e85f9cd5e1"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl transition-all shadow-xl"
+                                >
+                                    AGENDAR CALIBRACIÓN ($27 USD)
+                                </a>
                             </div>
                         </div>
-                        
-                        <div className="space-y-4 bg-gray-900/50 p-4 rounded-lg border-t-2 border-gray-700">
-                            {poder.plantilla.map(item => (
-                                <div key={item.aspecto}>
-                                    <label className="block text-lg font-bold text-gray-200 mb-1">{item.aspecto}</label>
-                                    <p className="text-sm text-gray-400 mb-2 italic">{item.guia}</p>
-                                    <textarea 
-                                        rows={3}
-                                        value={templateInputs[poder.id]?.[item.aspecto] || ''}
-                                        onChange={(e) => handleInputChange(poder.id, item.aspecto, e.target.value)}
-                                        className="w-full bg-gray-800 border-2 border-gray-600 rounded-lg p-3 text-lg text-gray-200 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition-all"
-                                        aria-label={item.aspecto}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-
-                         <div className="mt-6 bg-red-900/50 p-4 rounded-xl border-l-4 border-red-400 shadow-lg">
-                            <h4 className="text-lg font-black text-red-400 mb-2"><i className="fa-solid fa-crosshairs mr-2"></i> MINI RETO DE ACTIVACIÓN</h4>
-                            <p className="text-base text-gray-200 leading-relaxed font-bold">
-                                {poder.miniReto}
-                            </p>
-                        </div>
                     </div>
-                ))}
-            </div>
-
-             <div className="mt-20">
-                <h3 className="text-3xl font-black text-center mb-6 text-purple-400">
-                    <i className="fa-solid fa-flask-vial mr-3"></i>CREA TU PROPIO COMBO ALQUÍMICO
-                </h3>
-                <p className="text-lg text-center text-gray-400 mb-8 italic">
-                    Combina dos poderes para forjar una nueva capacidad. Esta es la esencia de la maestría.
-                </p>
-                <div className="dashboard-widget p-8 border-l-4 border-purple-500">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label className="block text-lg font-bold text-gray-300 mb-2">Ingrediente 1 (Poder)</label>
-                            <input type="text" placeholder="Ej: Dominio Narrativo" value={comboPoder1} onChange={(e) => handleComboInputChange('poder1', e.target.value)} className="w-full bg-gray-800 border-2 border-gray-600 rounded-lg p-3 text-lg text-gray-200 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all" />
-                        </div>
-                        <div>
-                            <label className="block text-lg font-bold text-gray-300 mb-2">Ingrediente 2 (Poder)</label>
-                            <input type="text" placeholder="Ej: Inyección de Caos" value={comboPoder2} onChange={(e) => handleComboInputChange('poder2', e.target.value)} className="w-full bg-gray-800 border-2 border-gray-600 rounded-lg p-3 text-lg text-gray-200 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all" />
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block text-lg font-bold text-gray-300 mb-2">Resultado: Mi Combo Alquímico</label>
-                        <textarea rows={4} placeholder="El resultado de tu fusión aparecerá aquí..." value={comboResultado} readOnly className="w-full bg-gray-800 border-2 border-gray-600 rounded-lg p-3 text-lg text-gray-200 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"></textarea>
-                    </div>
-                    <button onClick={handleForjarCombo} disabled={isForging || !comboPoder1 || !comboPoder2} className="w-full mt-6 text-center bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 rounded-lg transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed btn-dynamic">
-                        {isForging ? (
-                            <><i className="fa-solid fa-spinner fa-spin mr-2"></i> FORJANDO...</>
-                        ) : (
-                            <><i className="fa-solid fa-wand-magic-sparkles mr-2"></i> FORJAR COMBO</>
-                        )}
-                    </button>
                 </div>
-            </div>
-
-            <div className="text-center mt-16">
-                <p className="text-xl text-gray-300 font-bold">
-                    ¿Tus combos no tienen la potencia que buscas?
-                </p>
-                <p className="text-lg text-gray-400 mt-2 max-w-2xl mx-auto">
-                    La verdadera alquimia requiere un diagnóstico preciso. En la Sesión Descubrimiento, calibramos tus ingredientes para forjar los combos que realmente desintegran tus limitaciones.
-                </p>
-                <a 
-                    href="https://ko-fi.com/s/e85f9cd5e1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-block px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-black rounded-xl text-lg shadow-2xl hover:scale-105 transition-all transform pulse-glow">
-                    AGENDA TU SESIÓN DE CALIBRACIÓN ($27 USD)
-                </a>
             </div>
         </section>
     );
