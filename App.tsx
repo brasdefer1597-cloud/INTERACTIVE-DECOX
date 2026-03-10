@@ -31,13 +31,16 @@ import Header from './components/Header';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import TheCodex from './components/TheCodex';
 
-// Modal Content
-import PostPaymentPage from './components/PostPaymentPage';
-import DiscoverySessionPage from './components/DiscoverySessionPage';
-import KitMagistralSection from './components/KitMagistralSection';
-import TotalTransformationSection from './components/TotalTransformationSection';
-import HackPracticeModule from './components/HackPracticeModule';
-import HackEducationalModule from './components/HackEducationalModule';
+// ⚡ Bolt Performance Optimization:
+// Modals are heavy components that are only rendered conditionally when a user interacts.
+// By lazy-loading them with React.lazy() and Suspense, we split them into separate chunks.
+// Impact: Reduces initial bundle size significantly, improving Time To Interactive (TTI).
+const PostPaymentPage = React.lazy(() => import('./components/PostPaymentPage'));
+const DiscoverySessionPage = React.lazy(() => import('./components/DiscoverySessionPage'));
+const KitMagistralSection = React.lazy(() => import('./components/KitMagistralSection'));
+const TotalTransformationSection = React.lazy(() => import('./components/TotalTransformationSection'));
+const HackPracticeModule = React.lazy(() => import('./components/HackPracticeModule'));
+const HackEducationalModule = React.lazy(() => import('./components/HackEducationalModule'));
 
 const App = () => {
     const [completedHacks, setCompletedHacks] = useState<Set<number>>(new Set());
@@ -346,7 +349,9 @@ const App = () => {
                         </button>
                     </div>
                     <div className="p-8 md:p-12 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                        {modalBody}
+                        <React.Suspense fallback={<div className="flex justify-center items-center h-32 text-gray-500 font-mono text-sm tracking-widest uppercase animate-pulse">Sincronizando datos...</div>}>
+                            {modalBody}
+                        </React.Suspense>
                     </div>
                 </div>
             </div>
