@@ -66,20 +66,6 @@ const PostPaymentPage: React.FC<PostPaymentPageProps> = ({ serviceName, archetyp
                         </div>
                     </div>
                 );
-            case 'total':
-                return (
-                    <div className="space-y-4">
-                        <p className="text-lg text-gray-300">Has iniciado el protocolo de **Transformación Total**. Un estratega senior se pondrá en contacto contigo en las próximas 24 horas.</p>
-                        <a 
-                            href="https://wa.me/yournumber?text=Hola,%20he%20iniciado%20mi%20Transformación%20Total" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-block px-8 py-4 bg-pink-600 text-white font-black rounded-xl shadow-xl hover:bg-pink-500 transition-all transform hover:scale-105"
-                        >
-                            <i className="fa-solid fa-user-tie mr-2"></i> HABLAR CON MI ESTRATEGA
-                        </a>
-                    </div>
-                );
             default:
                 return null;
         }

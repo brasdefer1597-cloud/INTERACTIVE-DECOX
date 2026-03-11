@@ -35,7 +35,6 @@ import TheCodex from './components/TheCodex';
 import PostPaymentPage from './components/PostPaymentPage';
 import DiscoverySessionPage from './components/DiscoverySessionPage';
 import KitMagistralSection from './components/KitMagistralSection';
-import TotalTransformationSection from './components/TotalTransformationSection';
 import HackPracticeModule from './components/HackPracticeModule';
 import HackEducationalModule from './components/HackEducationalModule';
 
@@ -281,11 +280,6 @@ const App = () => {
                 title = 'Kit Magistral';
                 subtitle = 'La arquitectura para dominar tus hacks.';
                 modalBody = <KitMagistralSection onShowDiscovery={() => showModal('discovery')} />;
-                break;
-            case 'total':
-                title = 'Transformación Total';
-                subtitle = 'Asciende al Nivel Maestro.';
-                modalBody = <TotalTransformationSection />;
                 break;
             case 'hack':
                 title = hack.title;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Archetype, PurchasedService } from '../utils/types';
 import { CERTIFICATIONS_DATA, HACKS_DATA } from '../utils/constants';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ArchitectDashboardProps {
     completedHacks: Set<number>;
@@ -21,17 +22,18 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
     isDirectiveLoading,
     purchasedServices,
 }) => {
-    const [displayedDirective, setDisplayedDirective] = useState("Solicita una directiva para tu próximo movimiento estratégico...");
+    const [displayedDirective, setDisplayedDirective] = useState("");
+    const [activeTab, setActiveTab] = useState<'status' | 'certs' | 'protocols'>('status');
 
     const completedCount = completedHacks.size;
     const certsUnlocked = earnedCerts.size;
 
     const levels = [
-        { name: 'Iniciado', min: 0, max: 2, color: 'text-gray-400', bg: 'bg-gray-400' },
-        { name: 'Decodificador', min: 3, max: 5, color: 'text-emerald-400', bg: 'bg-emerald-400' },
-        { name: 'Arquitecto de Realidad', min: 6, max: 8, color: 'text-blue-400', bg: 'bg-blue-400' },
-        { name: 'Alquimista Maestro', min: 9, max: 11, color: 'text-purple-400', bg: 'bg-purple-400' },
-        { name: 'Chalamandra Magistral', min: 12, max: 99, color: 'text-yellow-400', bg: 'bg-yellow-400' }
+        { name: 'Iniciado', min: 0, max: 2, color: 'text-gray-400', bg: 'bg-gray-400', shadow: 'shadow-gray-500/20' },
+        { name: 'Decodificador', min: 3, max: 5, color: 'text-emerald-400', bg: 'bg-emerald-400', shadow: 'shadow-emerald-500/20' },
+        { name: 'Arquitecto de Realidad', min: 6, max: 8, color: 'text-blue-400', bg: 'bg-blue-400', shadow: 'shadow-blue-500/20' },
+        { name: 'Alquimista Maestro', min: 9, max: 11, color: 'text-purple-400', bg: 'bg-purple-400', shadow: 'shadow-purple-500/20' },
+        { name: 'Chalamandra Magistral', min: 12, max: 99, color: 'text-yellow-400', bg: 'bg-yellow-400', shadow: 'shadow-yellow-500/20' }
     ];
 
     const currentLevel = levels.find(l => completedCount >= l.min && completedCount <= l.max) || levels[0];
@@ -58,10 +60,10 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
                 } else {
                     clearInterval(interval);
                 }
-            }, 30);
+            }, 20);
             return () => clearInterval(interval);
         } else if (!aiDirective && !isDirectiveLoading) {
-             setDisplayedDirective("Solicita una directiva para tu próximo movimiento estratégico...");
+             setDisplayedDirective("Esperando transmisión de comando estratégico...");
         }
     }, [aiDirective, isDirectiveLoading]);
 
@@ -69,174 +71,271 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
         switch (type) {
             case 'discovery': return 'fa-calendar-check text-yellow-400';
             case 'magistral': return 'fa-box-open text-purple-400';
-            case 'total': return 'fa-infinity text-pink-400';
             default: return 'fa-gear';
         }
     };
 
-    const getServiceAction = (type: string) => {
-        switch (type) {
-            case 'discovery': return { label: 'AGENDAR', link: 'https://calendly.com/chalamandra/discovery' };
-            case 'magistral': return { label: 'ACCEDER', link: '#' };
-            case 'total': return { label: 'CONTACTAR', link: 'https://wa.me/yournumber' };
-            default: return { label: 'VER', link: '#' };
-        }
-    };
-
     return (
-        <section id="dashboard" className="py-20 px-6 max-w-6xl mx-auto">
-            <h2 className="text-4xl font-black text-center mb-6 text-white">
-                <i className="fa-solid fa-table-cells-large mr-3"></i>ARCHITECT'S DASHBOARD
-            </h2>
-            <p className="text-xl text-center text-gray-400 mb-12 italic">
-                Tu centro de comando para la reingeniería cognitiva.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Progress Overview Widget */}
-                <div className="dashboard-widget">
-                    <h3 className="text-lg font-bold text-gray-400 mb-4 flex items-center"><i className="fa-solid fa-chart-line mr-2"></i>ESTADO DE PROGRESO</h3>
-                    <div className="space-y-4">
-                        <div className="text-center">
-                            <p className="text-5xl font-black text-white">{completedCount}<span className="text-xl text-gray-400">/{HACKS_DATA.length}</span></p>
-                            <p className="text-sm font-semibold text-gray-400">Hacks Dominados</p>
+        <section id="dashboard" className="py-32 px-6 bg-black relative overflow-hidden">
+            {/* Ambient Background */}
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.05)_0%,transparent_50%)]"></div>
+            
+            <div className="max-w-7xl mx-auto relative z-10">
+                <header className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.4em]">Sistema Operativo Magistral v2.5</span>
                         </div>
-                         <div className="text-center">
-                            <p className="text-5xl font-black text-white">{certsUnlocked}<span className="text-xl text-gray-400">/{CERTIFICATIONS_DATA.length}</span></p>
-                            <p className="text-sm font-semibold text-gray-400">Certificaciones</p>
-                        </div>
-                        <div className="text-center">
-                            <p className={`text-2xl font-black ${currentLevel.color} glitch-text`} data-text={currentLevel.name.toUpperCase()}>
-                                {currentLevel.name.toUpperCase()}
-                            </p>
-                            <p className="text-sm font-semibold text-gray-400 mb-2">Rango de Maestría</p>
+                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none">
+                            Command <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white">Center</span>
+                        </h2>
+                    </div>
+
+                    <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10">
+                        {(['status', 'certs', 'protocols'] as const).map((tab) => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                    activeTab === tab ? 'bg-white text-black shadow-lg' : 'text-gray-500 hover:text-white'
+                                }`}
+                            >
+                                {tab === 'status' ? 'Estado' : tab === 'certs' ? 'Méritos' : 'Protocolos'}
+                            </button>
+                        ))}
+                    </div>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Left Column: Core Stats */}
+                    <div className="lg:col-span-4 space-y-6">
+                        {/* Mastery Rank Card */}
+                        <motion.div 
+                            layout
+                            className={`p-10 rounded-[3rem] bg-gradient-to-br from-gray-900 to-black border-2 border-white/5 shadow-2xl relative overflow-hidden group`}
+                        >
+                            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                                <i className="fa-solid fa-crown text-6xl text-white"></i>
+                            </div>
                             
-                            {nextLevel && (
-                                <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden mt-2">
-                                    <div 
-                                        className={`h-full ${currentLevel.bg} transition-all duration-1000`} 
-                                        style={{ width: `${progressToNext}%` }}
-                                    ></div>
+                            <div className="relative z-10 space-y-8">
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Rango de Maestría</span>
+                                    <h3 className={`text-4xl font-black uppercase tracking-tighter leading-none ${currentLevel.color}`}>
+                                        {currentLevel.name}
+                                    </h3>
                                 </div>
-                            )}
-                            <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">
-                                {nextLevel ? `Próximo Rango: ${nextLevel.name}` : 'Nivel Máximo Alcanzado'}
-                            </p>
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-5xl font-black text-white leading-none">{completedCount}</span>
+                                        <span className="text-xs font-bold text-gray-500 mb-1">/ {HACKS_DATA.length} HACKS</span>
+                                    </div>
+                                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${(completedCount / HACKS_DATA.length) * 100}%` }}
+                                            className={`h-full ${currentLevel.bg} shadow-[0_0_15px_rgba(255,255,255,0.2)]`}
+                                        />
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-widest text-center">
+                                        {nextLevel ? `Faltan ${nextLevel.min - completedCount} para ${nextLevel.name}` : 'Nivel Máximo Alcanzado'}
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Security Status */}
+                        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/[0.07] transition-all">
+                            <div className="space-y-1">
+                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Seguridad Cognitiva</span>
+                                <p className={`text-xl font-black uppercase tracking-tighter ${security.color}`}>{security.level}</p>
+                            </div>
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl bg-black/40 border border-white/5 ${security.color}`}>
+                                <i className={`fa-solid ${security.icon}`}></i>
+                            </div>
+                        </div>
+
+                        {/* Archetype Profile */}
+                        <div className="p-10 rounded-[3rem] bg-white/5 border border-white/10 relative overflow-hidden group">
+                            <div className="relative z-10 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Perfil de Arquetipo</span>
+                                    <i className="fa-solid fa-dna text-white/20"></i>
+                                </div>
+                                <div className="text-center py-4">
+                                    {dominantArchetype ? (
+                                        <h4 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">
+                                            {dominantArchetype}
+                                        </h4>
+                                    ) : (
+                                        <p className="text-gray-600 font-black uppercase tracking-widest text-xs">Diagnóstico Pendiente</p>
+                                    )}
+                                </div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {[1, 2, 3].map(i => (
+                                        <div key={i} className={`h-1 rounded-full ${dominantArchetype ? 'bg-white/20' : 'bg-white/5'}`}></div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Cognitive Security & Archetype Widget */}
-                 <div className="dashboard-widget lg:col-span-2">
-                     <h3 className="text-lg font-bold text-gray-400 mb-4 flex items-center"><i className="fa-solid fa-brain mr-2"></i>PERFIL COGNITIVO</h3>
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="text-center bg-gray-800 p-4 rounded-xl">
-                             <p className="text-sm font-semibold text-gray-400 mb-2">ARQUETIPO DOMINANTE</p>
-                            {dominantArchetype ? (
-                                <p className="text-3xl font-black text-white">{dominantArchetype.toUpperCase()}</p>
-                            ) : (
-                                <p className="text-lg font-bold text-gray-500">NO DEFINIDO</p>
-                            )}
-                        </div>
-                        <div className="text-center bg-gray-800 p-4 rounded-xl">
-                             <p className="text-sm font-semibold text-gray-400 mb-2">SEGURIDAD COGNITIVA</p>
-                             <p className={`text-3xl font-black ${security.color}`}><i className={`fa-solid ${security.icon} mr-2`}></i>{security.level}</p>
-                        </div>
-                     </div>
-                     <div className="mt-6 bg-black/30 p-4 rounded-lg">
-                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-gray-400 flex items-center"><i className="fa-solid fa-eye mr-2"></i>ORÁCULO ESTRATÉGICO</h3>
-                            <span className="text-xs font-semibold text-purple-400 bg-purple-900/50 px-2 py-1 rounded-md">POTENCIADO POR IA</span>
-                         </div>
-                         <div className="p-4 bg-gray-900 rounded-lg min-h-[100px] flex items-center justify-center">
-                            {isDirectiveLoading ? (
-                                <i className="fa-solid fa-spinner fa-spin text-3xl text-yellow-400"></i>
-                            ) : (
-                                <p className={`text-lg text-gray-200 italic ${aiDirective ? 'typewriter-text' : ''}`}>
-                                    {displayedDirective}
-                                </p>
-                            )}
-                         </div>
-                         <button 
-                            onClick={onGenerateDirective}
-                            disabled={isDirectiveLoading}
-                            className="w-full mt-4 text-center bg-gradient-to-r from-purple-600 to-pink-600 text-white font-black py-3 px-4 rounded-xl transition-all text-lg btn-dynamic disabled:opacity-50 disabled:cursor-not-allowed">
-                                {isDirectiveLoading ? 'DECODIFICANDO...' : 'GENERAR DIRECTIVA'}
-                         </button>
-                     </div>
-                </div>
+                    {/* Right Column: Dynamic Content */}
+                    <div className="lg:col-span-8 space-y-6">
+                        <AnimatePresence mode="wait">
+                            {activeTab === 'status' && (
+                                <motion.div 
+                                    key="status"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="space-y-6"
+                                >
+                                    {/* AI Strategic Directive */}
+                                    <div className="p-12 rounded-[3.5rem] bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-2 border-white/5 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-12 opacity-5">
+                                            <i className="fa-solid fa-microchip text-9xl text-white"></i>
+                                        </div>
+                                        
+                                        <div className="relative z-10 space-y-10">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400 border border-purple-500/30">
+                                                        <i className="fa-solid fa-bolt"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xl font-black text-white uppercase tracking-tighter">Oráculo Estratégico</h3>
+                                                        <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">IA Generativa Activa</p>
+                                                    </div>
+                                                </div>
+                                                {isDirectiveLoading && (
+                                                    <div className="flex gap-1">
+                                                        {[1, 2, 3].map(i => (
+                                                            <motion.div 
+                                                                key={i}
+                                                                animate={{ scale: [1, 1.5, 1] }}
+                                                                transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }}
+                                                                className="w-1.5 h-1.5 rounded-full bg-purple-500"
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
 
-                {/* Purchased Services Section */}
-                {purchasedServices.length > 0 && (
-                    <div className="dashboard-widget lg:col-span-3">
-                        <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center">
-                            <i className="fa-solid fa-box-open mr-2"></i>MIS PROTOCOLOS ACTIVOS
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {purchasedServices.map((service, idx) => {
-                                const action = getServiceAction(service.type);
-                                return (
-                                    <div key={idx} className="bg-black/40 border border-white/10 p-6 rounded-2xl flex items-center justify-between">
-                                        <div className="flex items-center">
-                                            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl mr-4">
-                                                <i className={`fa-solid ${getServiceIcon(service.type)}`}></i>
+                                            <div className="min-h-[160px] p-8 bg-black/40 rounded-[2rem] border border-white/5 backdrop-blur-xl">
+                                                <p className="text-xl text-gray-300 leading-relaxed italic font-medium">
+                                                    {displayedDirective || "Sincronizando con la matriz de datos..."}
+                                                </p>
+                                            </div>
+
+                                            <button 
+                                                onClick={onGenerateDirective}
+                                                disabled={isDirectiveLoading}
+                                                className="group relative w-full py-6 bg-white text-black font-black rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                                <span className="relative z-10 uppercase tracking-[0.2em] text-sm">
+                                                    {isDirectiveLoading ? 'Decodificando...' : 'Solicitar Directiva Estratégica'}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Quick Stats Grid */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 flex items-center justify-center text-3xl text-emerald-400 border border-emerald-500/20">
+                                                <i className="fa-solid fa-award"></i>
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-white uppercase">{service.type}</h4>
-                                                <p className="text-[10px] text-gray-500">Adquirido: {new Date(service.date).toLocaleDateString()}</p>
+                                                <p className="text-4xl font-black text-white leading-none">{certsUnlocked}</p>
+                                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Méritos Desbloqueados</p>
                                             </div>
                                         </div>
-                                        <a 
-                                            href={action.link} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-[10px] font-black rounded-lg transition-all"
-                                        >
-                                            {action.label}
-                                        </a>
+                                        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center gap-6">
+                                            <div className="w-16 h-16 rounded-3xl bg-blue-500/10 flex items-center justify-center text-3xl text-blue-400 border border-blue-500/20">
+                                                <i className="fa-solid fa-layer-group"></i>
+                                            </div>
+                                            <div>
+                                                <p className="text-4xl font-black text-white leading-none">{purchasedServices.length}</p>
+                                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Protocolos Activos</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
+                                </motion.div>
+                            )}
 
-                {/* Digital Certifications Section */}
-                <div className="dashboard-widget lg:col-span-3">
-                    <h3 className="text-lg font-bold text-gray-400 mb-6 flex items-center">
-                        <i className="fa-solid fa-award mr-2"></i>CERTIFICACIONES DIGITALES
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {CERTIFICATIONS_DATA.map((cert) => {
-                            const isEarned = earnedCerts.has(cert.id);
-                            return (
-                                <div 
-                                    key={cert.id}
-                                    className={`relative p-6 rounded-2xl border transition-all duration-500 flex flex-col items-center text-center group ${
-                                        isEarned 
-                                        ? 'bg-white/5 border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.05)]' 
-                                        : 'bg-black/40 border-white/5 opacity-40 grayscale'
-                                    }`}
+                            {activeTab === 'certs' && (
+                                <motion.div 
+                                    key="certs"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                                 >
-                                    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 text-3xl ${isEarned ? cert.color : 'text-gray-600'}`}>
-                                        <i className={cert.icon}></i>
-                                    </div>
-                                    <h4 className={`font-black text-sm mb-2 ${isEarned ? 'text-white' : 'text-gray-500'}`}>{cert.title.toUpperCase()}</h4>
-                                    <p className="text-[10px] text-gray-500 font-medium leading-tight">{cert.description}</p>
-                                    
-                                    {isEarned && (
-                                        <div className="mt-4 pt-4 border-t border-white/10 w-full">
-                                            <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase">SRAP: {cert.srap}</span>
-                                        </div>
-                                    )}
+                                    {CERTIFICATIONS_DATA.map((cert) => {
+                                        const isEarned = earnedCerts.has(cert.id);
+                                        return (
+                                            <div 
+                                                key={cert.id}
+                                                className={`p-8 rounded-[2.5rem] border-2 transition-all duration-500 flex items-center gap-6 ${
+                                                    isEarned 
+                                                    ? 'bg-white/5 border-white/10 shadow-xl' 
+                                                    : 'bg-black/40 border-white/5 opacity-40 grayscale'
+                                                }`}
+                                            >
+                                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl ${isEarned ? cert.color : 'text-gray-600'} bg-black/40`}>
+                                                    <i className={cert.icon}></i>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <h4 className={`font-black uppercase tracking-tighter ${isEarned ? 'text-white' : 'text-gray-500'}`}>{cert.title}</h4>
+                                                    <p className="text-[10px] text-gray-500 font-medium leading-tight line-clamp-2">{cert.description}</p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </motion.div>
+                            )}
 
-                                    {!isEarned && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span className="text-[10px] font-black text-white tracking-widest uppercase">BLOQUEADO</span>
+                            {activeTab === 'protocols' && (
+                                <motion.div 
+                                    key="protocols"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-4"
+                                >
+                                    {purchasedServices.length > 0 ? (
+                                        purchasedServices.map((service, idx) => (
+                                            <div key={idx} className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/[0.07] transition-all">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="w-16 h-16 rounded-2xl bg-black/40 flex items-center justify-center text-3xl">
+                                                        <i className={`fa-solid ${getServiceIcon(service.type)}`}></i>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-xl font-black text-white uppercase tracking-tighter">{service.type}</h4>
+                                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Estado: Operativo</p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-2">Adquirido {new Date(service.date).toLocaleDateString()}</p>
+                                                    <button className="px-6 py-2 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black rounded-xl border border-white/10 transition-all uppercase tracking-widest">
+                                                        Acceder
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="p-20 rounded-[3.5rem] bg-white/5 border border-dashed border-white/10 text-center space-y-4">
+                                            <i className="fa-solid fa-lock text-4xl text-gray-700"></i>
+                                            <p className="text-gray-500 font-black uppercase tracking-widest text-xs">No hay protocolos externos activos</p>
                                         </div>
                                     )}
-                                </div>
-                            );
-                        })}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>

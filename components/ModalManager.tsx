@@ -4,7 +4,6 @@ import { Hack, ModalState, ServiceType } from '../utils/types';
 import PostPaymentPage from './PostPaymentPage';
 import DiscoverySessionPage from './DiscoverySessionPage';
 import KitMagistralSection from './KitMagistralSection';
-import TotalTransformationSection from './TotalTransformationSection';
 
 interface ModalManagerProps {
     modalState: ModalState;
@@ -30,11 +29,6 @@ const ModalManager: React.FC<ModalManagerProps> = ({ modalState, hideModal, show
             title = 'Kit Magistral';
             subtitle = 'La arquitectura para dominar tus hacks.';
             modalBody = <KitMagistralSection onShowDiscovery={() => showModal('discovery')} />;
-            break;
-        case 'total':
-            title = 'Transformación Total';
-            subtitle = 'Asciende al Nivel Maestro.';
-            modalBody = <TotalTransformationSection />;
             break;
         case 'hack':
             title = hack.title;

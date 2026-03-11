@@ -65,11 +65,11 @@ export interface Certification {
   srap: string;
 }
 
-export type ServiceType = 'discovery' | 'magistral' | 'total';
+export type ServiceType = 'discovery' | 'magistral';
 
 export interface ModalState {
   isOpen: boolean;
-  type: 'hack' | 'srap' | 'total' | 'discovery' | 'magistral' | 'postPayment' | 'activation' | null;
+  type: 'hack' | 'srap' | 'discovery' | 'magistral' | 'postPayment' | 'activation' | null;
   data?: any;
 }
 
