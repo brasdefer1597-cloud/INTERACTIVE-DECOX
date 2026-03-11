@@ -10,6 +10,7 @@ interface PostPaymentPageProps {
 const PostPaymentPage: React.FC<PostPaymentPageProps> = ({ serviceName, archetype }) => {
     const [directive, setDirective] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
     useEffect(() => {
         const fetchDirective = async () => {
@@ -56,7 +57,7 @@ const PostPaymentPage: React.FC<PostPaymentPageProps> = ({ serviceName, archetyp
                                 <i className="fa-solid fa-download mr-2"></i> DESCARGAR KIT (PDF)
                             </a>
                             <a 
-                                href="https://wa.me/yournumber" 
+                                href={`https://wa.me/${whatsappNumber}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="inline-block px-8 py-4 bg-green-600 text-white font-black rounded-xl shadow-xl hover:bg-green-500 transition-all transform hover:scale-105"

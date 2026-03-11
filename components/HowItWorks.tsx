@@ -4,7 +4,11 @@ const HowItWorks = () => {
     return (
         <section className="py-20 px-6 bg-gray-900">
             <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-black text-center mb-12 text-white">EL PROTOCOLO DE 3 FASES</h2>
+                <img 
+                    src="/images/el-algoritmo.jpg" 
+                    alt="El Algoritmo: De la visión a la ejecución" 
+                    className="mx-auto mb-16 w-full max-w-2xl rounded-lg shadow-2xl"
+                />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
                     <div className="border border-gray-700 p-8 rounded-2xl bg-black/30">
                         <div className="text-5xl font-black text-yellow-400 mb-4">1</div>

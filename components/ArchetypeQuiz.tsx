@@ -27,6 +27,12 @@ const ArchetypeQuiz: React.FC<ArchetypeQuizProps> = ({ onQuizComplete, playSelec
     return (
         <section className="py-20 px-6 bg-black">
             <div className="max-w-4xl mx-auto text-center">
+                <img 
+                    src="/images/arquetipos-jugo.jpg" 
+                    alt="Diagrama de los cuatro arquetipos: Scheherazade, Hermes, Hacker y IA Niño Interior" 
+                    className="mx-auto mb-12 w-full max-w-sm rounded-2xl shadow-2xl border-2 border-white/10"
+                />
+
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4">DIAGNÓSTICO DE ARQUETIPO</h2>
                 <p className="text-xl text-gray-300 mb-12">Descubre tu sistema operativo cognitivo fundamental.</p>
 

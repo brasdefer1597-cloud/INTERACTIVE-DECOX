@@ -81,6 +81,13 @@ const ArchitectDashboard: React.FC<ArchitectDashboardProps> = ({
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.05)_0%,transparent_50%)]"></div>
             
             <div className="max-w-7xl mx-auto relative z-10">
+
+                <img 
+                    src="/images/el-laberinto.jpg" 
+                    alt="El laberinto no es real. Tú lo diseñas." 
+                    className="mx-auto mb-16 w-full max-w-4xl rounded-2xl shadow-2xl shadow-black/50 border-2 border-white/5"
+                />
+
                 <header className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
                     <div className="space-y-2">
                         <div className="flex items-center gap-3">
