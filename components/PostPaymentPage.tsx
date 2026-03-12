@@ -10,7 +10,7 @@ interface PostPaymentPageProps {
 const PostPaymentPage: React.FC<PostPaymentPageProps> = ({ serviceName, archetype }) => {
     const [directive, setDirective] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
 
     useEffect(() => {
         const fetchDirective = async () => {

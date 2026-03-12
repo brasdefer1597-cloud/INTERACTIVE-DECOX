@@ -1,0 +1,13 @@
+
+> chalamandra-magistral@1.0.0 dev
+> vite
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Port 3000 is in use, trying another one...
+
+  VITE v5.4.21  ready in 254 ms
+
+  ➜  Local:   http://localhost:30013:19:25 PM [vite] page reload index.html
+3:20:45 PM [vite] hmr update /App.tsx, /index.css, /components/GrimorioTacticoSection.tsx, /components/ContactForm.tsx, /components/PostPaymentPage.tsx
+3:20:50 PM [vite] hmr update /components/WhatsAppFloat.tsx, /index.css
+3:21:11 PM [vite] hmr update /components/PostPaymentPage.tsx, /index.css
