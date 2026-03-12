@@ -1,8 +1,8 @@
 import React from 'react';
 
 const WhatsAppFloat = () => {
-    const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-    const message = process.env.NEXT_PUBLIC_WHATSAPP_ENCODED_MESSAGE;
+    const number = import.meta.env.VITE_WHATSAPP_NUMBER;
+    const message = import.meta.env.VITE_WHATSAPP_ENCODED_MESSAGE;
 
     return (
         <a 
