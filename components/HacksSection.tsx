@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import { Hack } from '../utils/types';
 import { COMBOS } from '../utils/constants';
 
@@ -10,7 +10,23 @@ interface HacksSectionProps {
     playUIClick: () => void;
 }
 
-const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => void; onAmplify: () => void; }> = ({ hack, isCompleted, onActivate, onAmplify }) => {
+interface HackCardProps {
+    hack: Hack;
+    isCompleted: boolean;
+    onActivate: (id: number) => void;
+    onAmplify: (id: number) => void;
+    playUIClick: () => void;
+}
+
+/**
+ * ⚡ Bolt Optimization:
+ * Memoized HackCard to prevent O(N) re-renders when a single hack is completed.
+ * Using React.memo prevents the card from re-rendering if its props haven't changed.
+ */
+const HackCard = memo(({ hack, isCompleted, onActivate, onAmplify, playUIClick }: HackCardProps) => {
+    const handleActivate = useCallback(() => { playUIClick(); onActivate(hack.id); }, [hack.id, onActivate, playUIClick]);
+    const handleAmplify = useCallback(() => { playUIClick(); onAmplify(hack.id); }, [hack.id, onAmplify, playUIClick]);
+
     return (
         <div className={`bg-gray-900/50 backdrop-blur-sm p-6 rounded-3xl border-2 transition-all duration-500 ${isCompleted ? 'border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.15)]' : 'border-white/5 hover:border-yellow-400/50 hover:shadow-2xl hover:-translate-y-2'}`}>
             <div className="flex items-start justify-between mb-6">
@@ -28,13 +44,13 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             
             <div className="grid grid-cols-2 gap-3">
                 <button 
-                    onClick={onAmplify} 
+                    onClick={handleAmplify}
                     className="text-[10px] font-black uppercase tracking-widest py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/10"
                 >
                     Amplificar
                 </button>
                 <button 
-                    onClick={onActivate} 
+                    onClick={handleActivate}
                     className={`text-[10px] font-black uppercase tracking-widest py-3 rounded-xl transition-all ${isCompleted ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20'}`}
                 >
                     {isCompleted ? 'Re-Activar' : 'Activar'}
@@ -42,7 +58,7 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             </div>
         </div>
     );
-};
+});
 
 const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
     const archetypes = Array.from(new Set(hacks.map(h => h.archetype)));
@@ -101,8 +117,9 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
                                         key={hack.id}
                                         hack={hack}
                                         isCompleted={completedHacks.has(hack.id)}
-                                        onActivate={() => { playUIClick(); onActivateClick(hack.id); }}
-                                        onAmplify={() => { playUIClick(); onAmplifyClick(hack.id); }}
+                                        onActivate={onActivateClick}
+                                        onAmplify={onAmplifyClick}
+                                        playUIClick={playUIClick}
                                     />
                                 ))}
                             </div>
