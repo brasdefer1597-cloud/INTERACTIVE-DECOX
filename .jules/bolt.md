@@ -1,0 +1,3 @@
+## 2024-05-24 - [Avoid inline arrow functions with React.memo in list components]
+**Learning:** Using inline arrow functions in the render block of a parent component (like `onActivate={() => handleActivate(id)}`) creates a new function reference on every re-render. When passed to a child component wrapped in `React.memo` (like `HackCard`), it breaks memoization because the props are always considered new, causing unnecessary re-renders of the entire list.
+**Action:** When mapping over lists to render `React.memo` components, define stable handlers using `useCallback` in the parent that accept the item's `id` as an argument, and pass that handler reference directly to the child. Update the child's prop types to accept the `id` argument and call it internally.
