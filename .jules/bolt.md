@@ -1,0 +1,3 @@
+## 2024-10-24 - Stable Event Handlers and React.memo for List Components
+**Learning:** In large React applications with frequent state updates (like an active `ModalState` or an `AudioContext` status update), passing inline arrow functions to child components rendered in a list breaks the shallow equality check of `React.memo`, leading to expensive and unnecessary re-renders of the entire list.
+**Action:** Always wrap event handlers passed to list child components in `useCallback` (creating stable references), update list components to accept an `id` instead of pre-binding the function, and wrap the list components with `React.memo`. This guarantees the memoization is effective.
