@@ -21,6 +21,7 @@ import ArchetypeQuiz from '@/components/ArchetypeQuiz';
 import HacksSection from '@/components/HacksSection';
 import ContactForm from '@/components/ContactForm';
 import ArchitectDashboard from '@/components/ArchitectDashboard';
+import PowerLensGenerator from '@/components/PowerLensGenerator';
 import GrimorioTacticoSection from '@/components/GrimorioTacticoSection';
 import SRAPMetronome from '@/components/SRAPMetronome';
 import OraculoChalamandra from '@/components/OraculoChalamandra';
@@ -367,15 +368,18 @@ const App = () => {
                     {!dominantArchetype ? (
                         <ArchetypeQuiz onQuizComplete={handleQuizComplete} playSelectSound={() => playSound('quizSelect', 'C3')} />
                     ) : (
-                        <ArchitectDashboard 
-                            completedHacks={completedHacks}
-                            earnedCerts={earnedCerts}
-                            dominantArchetype={dominantArchetype}
-                            onGenerateDirective={handleGenerateDirective}
-                            aiDirective={aiDirective}
-                            isDirectiveLoading={isDirectiveLoading}
-                            purchasedServices={purchasedServices}
-                        />
+                        <>
+                            <ArchitectDashboard 
+                                completedHacks={completedHacks}
+                                earnedCerts={earnedCerts}
+                                dominantArchetype={dominantArchetype}
+                                onGenerateDirective={handleGenerateDirective}
+                                aiDirective={aiDirective}
+                                isDirectiveLoading={isDirectiveLoading}
+                                purchasedServices={purchasedServices}
+                            />
+                            <PowerLensGenerator />
+                        </>
                     )}
                     
                     <HacksSection 
