@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { HACKS_DATA, RPG_MODULES_DATA, RPG_MODULE_ORDER } from '../utils/constants';
-import { Hack, Archetype } from '../utils/types';
+import { HACKS_DATA, RPG_MODULES_DATA, RPG_MODULE_ORDER } from '@/utils/constants';
+import { Hack, Archetype } from '@/utils/types';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ModuleCardProps {

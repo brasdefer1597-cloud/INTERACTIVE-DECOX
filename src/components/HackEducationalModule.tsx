@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hack } from '../utils/types';
+import { Hack } from '@/utils/types';
 
 interface HackEducationalModuleProps {
     hack: Hack;

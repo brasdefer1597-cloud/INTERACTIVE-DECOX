@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { PODERES_SHEREZADE_DATA } from '../utils/constants';
-import { generateAlchemicalCombo } from '../services/geminiService';
+import { PODERES_SHEREZADE_DATA } from '@/utils/constants';
+import { generateAlchemicalCombo } from '@/services/geminiService';
 import { motion, AnimatePresence } from 'motion/react';
 
 const GRIMORIO_INPUTS_KEY = 'grimorioTemplateInputs';

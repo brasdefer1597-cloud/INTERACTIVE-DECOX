@@ -1,6 +1,6 @@
 import React from 'react';
-import { Hack } from '../utils/types';
-import { COMBOS } from '../utils/constants';
+import { Hack } from '@/utils/types';
+import { COMBOS } from '@/utils/constants';
 
 interface HacksSectionProps {
     hacks: Hack[];

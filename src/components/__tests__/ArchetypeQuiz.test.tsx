@@ -1,6 +1,6 @@
 
 import { render, fireEvent, screen } from '@testing-library/react';
-import ArchetypeQuiz from './ArchetypeQuiz';
+import ArchetypeQuiz from '../ArchetypeQuiz';
 import { vi } from 'vitest';
 
 describe('ArchetypeQuiz', () => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
     completedCount: number;
@@ -24,7 +25,10 @@ const Header: React.FC<HeaderProps> = ({ completedCount, totalCount }) => {
     }, [fullHeroText]);
 
     return (
-        <header className="text-center py-20 px-6 hero-gradient">
+        <header className="text-center py-20 px-6 hero-gradient relative">
+            <div className="absolute top-4 right-4">
+                <ThemeToggle />
+            </div>
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-5xl md:text-6xl font-black mb-4 premium-glow">Chalamandra Magistral</h1>
                 <p className="text-2xl md:text-3xl font-semibold mb-8 text-white h-10">{heroText}</p>

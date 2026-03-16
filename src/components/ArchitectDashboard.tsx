@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Archetype, PurchasedService } from '../utils/types';
-import { CERTIFICATIONS_DATA, HACKS_DATA } from '../utils/constants';
+import { Archetype, PurchasedService } from '@/utils/types';
+import { CERTIFICATIONS_DATA, HACKS_DATA } from '@/utils/constants';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ArchitectDashboardProps {

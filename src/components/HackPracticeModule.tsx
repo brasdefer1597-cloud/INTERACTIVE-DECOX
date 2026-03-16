@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Hack } from '../utils/types';
+import { Hack } from '@/utils/types';
 
 interface HackPracticeModuleProps {
     hack: Hack;

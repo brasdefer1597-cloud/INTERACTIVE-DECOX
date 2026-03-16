@@ -1,42 +1,43 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as Tone from 'tone';
-import { HACKS_DATA, PODERES_SHEREZADE_DATA, CERTIFICATIONS_DATA } from './utils/constants';
-import { Hack, ModalState, Archetype, PoderDeSherezade, Certification, PurchasedService, ServiceType } from './utils/types';
-import { generateStrategicDirective } from './services/geminiService';
-import Confetti from './components/Confetti';
+import { HACKS_DATA, PODERES_SHEREZADE_DATA, CERTIFICATIONS_DATA } from '@/utils/constants';
+import { Hack, ModalState, Archetype, PoderDeSherezade, Certification, PurchasedService, ServiceType } from '@/utils/types';
+import { generateStrategicDirective } from '@/services/geminiService';
+import Confetti from '@/components/Confetti';
 import { toast } from 'sonner';
 
 // Landing Page Sections
 import { Toaster } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
-import SEO from './components/SEO';
-import Introduction from './components/Introduction';
-import HowItWorks from './components/HowItWorks';
-import Testimonials from './components/Testimonials';
-import Faq from './components/Faq';
-import Footer from './components/Footer';
+import SEO from '@/components/SEO';
+import Introduction from '@/components/Introduction';
+import HowItWorks from '@/components/HowItWorks';
+import Testimonials from '@/components/Testimonials';
+import Faq from '@/components/Faq';
+import Footer from '@/components/Footer';
 
 // Core App Sections
-import ArchetypeQuiz from './components/ArchetypeQuiz';
-import HacksSection from './components/HacksSection';
-import ContactForm from './components/ContactForm';
-import ArchitectDashboard from './components/ArchitectDashboard';
-import GrimorioTacticoSection from './components/GrimorioTacticoSection';
-import SRAPMetronome from './components/SRAPMetronome';
-import OraculoChalamandra from './components/OraculoChalamandra';
-import KitMagistralRPG from './components/KitMagistralRPG';
-import PremiumServices from './components/PremiumServices';
-import SrapRitual from './components/SrapRitual';
-import Header from './components/Header';
-import WhatsAppFloat from './components/WhatsAppFloat';
-import TheCodex from './components/TheCodex';
+import ArchetypeQuiz from '@/components/ArchetypeQuiz';
+import HacksSection from '@/components/HacksSection';
+import ContactForm from '@/components/ContactForm';
+import ArchitectDashboard from '@/components/ArchitectDashboard';
+import GrimorioTacticoSection from '@/components/GrimorioTacticoSection';
+import SRAPMetronome from '@/components/SRAPMetronome';
+import OraculoChalamandra from '@/components/OraculoChalamandra';
+import KitMagistralRPG from '@/components/KitMagistralRPG';
+import PremiumServices from '@/components/PremiumServices';
+import SrapRitual from '@/components/SrapRitual';
+import Header from '@/components/Header';
+import WhatsAppFloat from '@/components/WhatsAppFloat';
+import TheCodex from '@/components/TheCodex';
 
 // Modal Content
-import PostPaymentPage from './components/PostPaymentPage';
-import DiscoverySessionPage from './components/DiscoverySessionPage';
-import KitMagistralSection from './components/KitMagistralSection';
-import HackPracticeModule from './components/HackPracticeModule';
-import HackEducationalModule from './components/HackEducationalModule';
+import PostPaymentPage from '@/components/PostPaymentPage';
+import DiscoverySessionPage from '@/components/DiscoverySessionPage';
+import KitMagistralSection from '@/components/KitMagistralSection';
+import HackPracticeModule from '@/components/HackPracticeModule';
+import HackEducationalModule from '@/components/HackEducationalModule';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const App = () => {
     const [completedHacks, setCompletedHacks] = useState<Set<number>>(new Set());
@@ -348,72 +349,74 @@ const App = () => {
     };
 
     return (
-        <div className="bg-black min-h-screen font-sans selection:bg-yellow-400 selection:text-black" onClick={startAudioContext}>
-            <SEO />
-            <Toaster position="top-center" expand={false} richColors theme="dark" />
-            {celebrate && <Confetti />}
-            <Header completedCount={completedHacks.size} totalCount={HACKS_DATA.length} />
-            
-            <motion.main
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-                <Introduction />
-                <HowItWorks />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <div className="bg-black min-h-screen font-sans selection:bg-yellow-400 selection:text-black" onClick={startAudioContext}>
+                <SEO />
+                <Toaster position="top-center" expand={false} richColors theme="dark" />
+                {celebrate && <Confetti />}
+                <Header completedCount={completedHacks.size} totalCount={HACKS_DATA.length} />
+                
+                <motion.main
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                    <Introduction />
+                    <HowItWorks />
 
-                {!dominantArchetype ? (
-                    <ArchetypeQuiz onQuizComplete={handleQuizComplete} playSelectSound={() => playSound('quizSelect', 'C3')} />
-                ) : (
-                    <ArchitectDashboard 
-                        completedHacks={completedHacks}
-                        earnedCerts={earnedCerts}
-                        dominantArchetype={dominantArchetype}
-                        onGenerateDirective={handleGenerateDirective}
-                        aiDirective={aiDirective}
-                        isDirectiveLoading={isDirectiveLoading}
-                        purchasedServices={purchasedServices}
+                    {!dominantArchetype ? (
+                        <ArchetypeQuiz onQuizComplete={handleQuizComplete} playSelectSound={() => playSound('quizSelect', 'C3')} />
+                    ) : (
+                        <ArchitectDashboard 
+                            completedHacks={completedHacks}
+                            earnedCerts={earnedCerts}
+                            dominantArchetype={dominantArchetype}
+                            onGenerateDirective={handleGenerateDirective}
+                            aiDirective={aiDirective}
+                            isDirectiveLoading={isDirectiveLoading}
+                            purchasedServices={purchasedServices}
+                        />
+                    )}
+                    
+                    <HacksSection 
+                        hacks={HACKS_DATA} 
+                        completedHacks={completedHacks} 
+                        onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
+                        onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
+                        playUIClick={() => playSound('uiClick', 'G5', '32n')}
                     />
-                )}
-                
-                <HacksSection 
-                    hacks={HACKS_DATA} 
-                    completedHacks={completedHacks} 
-                    onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
-                    onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
-                    playUIClick={() => playSound('uiClick', 'G5', '32n')}
-                />
-                
-                {dominantArchetype && (
-                    <div className="py-12 text-center">
-                         <button onClick={handleRetakeQuiz} className="px-8 py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 rounded-2xl transition-all text-xs font-black tracking-widest uppercase">
-                            Reiniciar Diagnóstico
-                        </button>
-                    </div>
-                )}
-                
-                <GrimorioTacticoSection />
-                <OraculoChalamandra onComboReveal={() => {
-                    playSound('comboReveal', 'C4', '16n');
-                    playSound('comboReveal', 'E4', '16n', Tone.now() + 0.07);
-                    playSound('comboReveal', 'A4', '16n', Tone.now() + 0.14);
-                }} />
-                <KitMagistralRPG onOpenModule={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} />
-                <SrapRitual onActivate={() => showModal('srap')} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
-                <SRAPMetronome />
-                <TheCodex />
-                <Testimonials />
-                <PremiumServices onServiceClick={(type) => showModal(type)} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
-                <ContactForm />
-                <Faq />
-            </motion.main>
+                    
+                    {dominantArchetype && (
+                        <div className="py-12 text-center">
+                            <button onClick={handleRetakeQuiz} className="px-8 py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10 rounded-2xl transition-all text-xs font-black tracking-widest uppercase">
+                                Reiniciar Diagnóstico
+                            </button>
+                        </div>
+                    )}
+                    
+                    <GrimorioTacticoSection />
+                    <OraculoChalamandra onComboReveal={() => {
+                        playSound('comboReveal', 'C4', '16n');
+                        playSound('comboReveal', 'E4', '16n', Tone.now() + 0.07);
+                        playSound('comboReveal', 'A4', '16n', Tone.now() + 0.14);
+                    }} />
+                    <KitMagistralRPG onOpenModule={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} />
+                    <SrapRitual onActivate={() => showModal('srap')} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
+                    <SRAPMetronome />
+                    <TheCodex />
+                    <Testimonials />
+                    <PremiumServices onServiceClick={(type) => showModal(type)} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
+                    <ContactForm />
+                    <Faq />
+                </motion.main>
 
-            <Footer />
-            <AnimatePresence>
-                {renderModalContent()}
-            </AnimatePresence>
-            <WhatsAppFloat />
-        </div>
+                <Footer />
+                <AnimatePresence>
+                    {renderModalContent()}
+                </AnimatePresence>
+                <WhatsAppFloat />
+            </div>
+        </ThemeProvider>
     );
 };
 

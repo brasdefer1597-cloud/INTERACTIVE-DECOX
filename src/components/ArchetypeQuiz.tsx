@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Archetype } from '../utils/types';
-import { QUIZ_QUESTIONS } from '../utils/constants';
+import { Archetype } from '@/utils/types';
+import { QUIZ_QUESTIONS } from '@/utils/constants';
 
 interface ArchetypeQuizProps {
     onQuizComplete: (archetype: Archetype) => void;

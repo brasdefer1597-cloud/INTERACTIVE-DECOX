@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateContactConfirmation } from '../services/geminiService';
+import { generateContactConfirmation } from '@/services/geminiService';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
