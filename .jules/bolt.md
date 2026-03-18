@@ -1,0 +1,3 @@
+## 2024-03-18 - [Optimizing List Components with React.memo]
+**Learning:** When using `React.memo` to optimize a list of components (like `HackCard` within `HacksSection`), passing inline arrow functions from the parent as props breaks memoization. The parent component will recreate the functions on every render (even if it's unrelated to the list items), causing the children to always re-render.
+**Action:** Instead of passing inline functions to list items, I must use `useCallback` in the parent component to create stable function references. Additionally, the item components should be responsible for calling these functions with their own specific data (e.g., passing their ID when clicked) rather than the parent creating a unique bound function for each item.
