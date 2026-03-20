@@ -1,0 +1,3 @@
+## 2024-03-20 - [React.memo in List Rendering with Inline Functions]
+**Learning:** [When rendering list components like `HackCard` inside `HacksSection`, passing inline arrow functions directly in the `map` loop defeats `React.memo`, causing all list items to needlessly re-render whenever the parent component updates. The parent components will also re-render constantly if the grandparent component (e.g. `App.tsx`) also passes inline functions.]
+**Action:** [To effectively use `React.memo` in list components, event handlers passed to list children must be stable functions that accept the item ID. `useCallback` must be declared at the top level of the parent component to provide stable references for those handlers.]
