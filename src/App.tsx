@@ -238,15 +238,27 @@ const App = () => {
         }
     };
 
-    const showModal = (type: ModalState['type'], data: any = null) => {
+    const showModal = useCallback((type: ModalState['type'], data: any = null) => {
         playSound('modalOpen');
         setModalState({ isOpen: true, type, data });
-    };
+    }, [isAudioContextStarted]);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playSound('modalClose');
         setModalState({ isOpen: false, type: null, data: null });
-    };
+    }, [isAudioContextStarted]);
+
+    const handleHacksSectionActivateClick = useCallback((id: number) => {
+        showModal('activation', HACKS_DATA.find(h => h.id === id));
+    }, [showModal]);
+
+    const handleHacksSectionAmplifyClick = useCallback((id: number) => {
+        showModal('hack', HACKS_DATA.find(h => h.id === id));
+    }, [showModal]);
+
+    const playUIClickSound = useCallback(() => {
+        playSound('uiClick', 'G5', '32n');
+    }, [isAudioContextStarted]);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -257,13 +269,13 @@ const App = () => {
         }, 500);
     }, [handleCelebration]);
 
-    const handleRetakeQuiz = () => {
+    const handleRetakeQuiz = useCallback(() => {
         playSound('uiClick', 'G5', '32n');
         setDominantArchetype(null);
         localStorage.removeItem('dominantArchetype');
         localStorage.removeItem('completedHacks');
         setCompletedHacks(new Set());
-    };
+    }, [isAudioContextStarted]);
 
     const renderModalContent = () => {
         if (!modalState.isOpen) return null;
@@ -385,9 +397,9 @@ const App = () => {
                     <HacksSection 
                         hacks={HACKS_DATA} 
                         completedHacks={completedHacks} 
-                        onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
-                        onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
-                        playUIClick={() => playSound('uiClick', 'G5', '32n')}
+                        onActivateClick={handleHacksSectionActivateClick}
+                        onAmplifyClick={handleHacksSectionAmplifyClick}
+                        playUIClick={playUIClickSound}
                     />
                     
                     {dominantArchetype && (
