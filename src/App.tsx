@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import * as Tone from 'tone';
 import { HACKS_DATA, PODERES_SHEREZADE_DATA, CERTIFICATIONS_DATA } from '@/utils/constants';
 import { Hack, ModalState, Archetype, PoderDeSherezade, Certification, PurchasedService, ServiceType } from '@/utils/types';
 import { generateStrategicDirective } from '@/services/geminiService';
-import Confetti from '@/components/Confetti';
+const Confetti = React.lazy(() => import("@/components/Confetti"));
 import { toast } from 'sonner';
 
 // Landing Page Sections
@@ -33,11 +33,11 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import TheCodex from '@/components/TheCodex';
 
 // Modal Content
-import PostPaymentPage from '@/components/PostPaymentPage';
-import DiscoverySessionPage from '@/components/DiscoverySessionPage';
-import KitMagistralSection from '@/components/KitMagistralSection';
-import HackPracticeModule from '@/components/HackPracticeModule';
-import HackEducationalModule from '@/components/HackEducationalModule';
+const PostPaymentPage = React.lazy(() => import("@/components/PostPaymentPage"));
+const DiscoverySessionPage = React.lazy(() => import("@/components/DiscoverySessionPage"));
+const KitMagistralSection = React.lazy(() => import("@/components/KitMagistralSection"));
+const HackPracticeModule = React.lazy(() => import("@/components/HackPracticeModule"));
+const HackEducationalModule = React.lazy(() => import("@/components/HackEducationalModule"));
 import { ThemeProvider } from '@/components/theme-provider';
 
 const App = () => {
@@ -342,7 +342,9 @@ const App = () => {
                         </button>
                     </div>
                     <div className="p-8 md:p-12 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                        {modalBody}
+                        <Suspense fallback={<div className="flex justify-center py-12"><div className="w-8 h-8 rounded-full border-4 border-white/10 border-t-cyan-400 animate-spin"></div></div>}>
+                            {modalBody}
+                        </Suspense>
                     </div>
                 </div>
             </div>
@@ -354,7 +356,9 @@ const App = () => {
             <div className="bg-black min-h-screen font-sans selection:bg-yellow-400 selection:text-black" onClick={startAudioContext}>
                 <SEO />
                 <Toaster position="top-center" expand={false} richColors theme="dark" />
-                {celebrate && <Confetti />}
+                <Suspense fallback={null}>
+                    {celebrate && <Confetti />}
+                </Suspense>
                 <Header completedCount={completedHacks.size} totalCount={HACKS_DATA.length} />
                 
                 <motion.main
