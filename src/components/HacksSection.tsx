@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import { Hack } from '@/utils/types';
 import { COMBOS } from '@/utils/constants';
 
@@ -10,7 +10,18 @@ interface HacksSectionProps {
     playUIClick: () => void;
 }
 
-const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => void; onAmplify: () => void; }> = ({ hack, isCompleted, onActivate, onAmplify }) => {
+// ⚡ Bolt: Wrapped HackCard in React.memo to prevent unnecessary re-renders of the entire grid
+// 📊 Impact: O(1) rendering for unchanged cards instead of O(N) when App.tsx state changes
+const HackCard = memo(({ hack, isCompleted, onActivate, onAmplify }: { hack: Hack; isCompleted: boolean; onActivate: (id: number) => void; onAmplify: (id: number) => void; }) => {
+    // ⚡ Bolt: Stable handlers prevent inline arrow functions in render
+    const handleAmplify = useCallback(() => {
+        onAmplify(hack.id);
+    }, [onAmplify, hack.id]);
+
+    const handleActivate = useCallback(() => {
+        onActivate(hack.id);
+    }, [onActivate, hack.id]);
+
     return (
         <div className={`bg-gray-900/50 backdrop-blur-sm p-6 rounded-3xl border-2 transition-all duration-500 ${isCompleted ? 'border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.15)]' : 'border-white/5 hover:border-yellow-400/50 hover:shadow-2xl hover:-translate-y-2'}`}>
             <div className="flex items-start justify-between mb-6">
@@ -28,13 +39,13 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             
             <div className="grid grid-cols-2 gap-3">
                 <button 
-                    onClick={onAmplify} 
+                    onClick={handleAmplify}
                     className="text-[10px] font-black uppercase tracking-widest py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/10"
                 >
                     Amplificar
                 </button>
                 <button 
-                    onClick={onActivate} 
+                    onClick={handleActivate}
                     className={`text-[10px] font-black uppercase tracking-widest py-3 rounded-xl transition-all ${isCompleted ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20'}`}
                 >
                     {isCompleted ? 'Re-Activar' : 'Activar'}
@@ -42,9 +53,22 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             </div>
         </div>
     );
-};
+});
+HackCard.displayName = 'HackCard';
 
-const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
+// ⚡ Bolt: Wrapped HacksSection in React.memo to prevent re-renders on unrelated App.tsx state changes
+const HacksSection = memo<HacksSectionProps>(({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
+    // ⚡ Bolt: Stable handlers for list items
+    const handleActivate = useCallback((id: number) => {
+        playUIClick();
+        onActivateClick(id);
+    }, [playUIClick, onActivateClick]);
+
+    const handleAmplify = useCallback((id: number) => {
+        playUIClick();
+        onAmplifyClick(id);
+    }, [playUIClick, onAmplifyClick]);
+
     const archetypes = Array.from(new Set(hacks.map(h => h.archetype)));
 
     // Find active combos
@@ -101,8 +125,8 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
                                         key={hack.id}
                                         hack={hack}
                                         isCompleted={completedHacks.has(hack.id)}
-                                        onActivate={() => { playUIClick(); onActivateClick(hack.id); }}
-                                        onAmplify={() => { playUIClick(); onAmplifyClick(hack.id); }}
+                                        onActivate={handleActivate}
+                                        onAmplify={handleAmplify}
                                     />
                                 ))}
                             </div>
@@ -112,6 +136,7 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
             </div>
         </section>
     );
-};
+});
+HacksSection.displayName = 'HacksSection';
 
 export default HacksSection;

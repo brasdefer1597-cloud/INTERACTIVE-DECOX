@@ -122,8 +122,10 @@ const App = () => {
         }
     }, [handleCelebration]);
 
+    // ⚡ Bolt: Wrapped sound and modal handlers in useCallback to maintain referential equality across App renders
+    // 📊 Impact: Prevents child components (like HacksSection) from re-rendering unnecessarily
     // --- Sound Playing Functions ---
-    const playSound = (type: keyof typeof synths.current, note?: string, duration?: string, time?: number) => {
+    const playSound = useCallback((type: keyof typeof synths.current, note?: string, duration?: string, time?: number) => {
         if (!isAudioContextStarted) return;
         const synth = synths.current[type];
         if (!synth) return;
@@ -133,7 +135,7 @@ const App = () => {
         } else if (note) {
             synth.triggerAttackRelease(note, duration || "16n", time || Tone.now());
         }
-    };
+    }, [isAudioContextStarted]);
 
     useEffect(() => {
         // --- Initialize all synths ---
@@ -238,15 +240,34 @@ const App = () => {
         }
     };
 
-    const showModal = (type: ModalState['type'], data: any = null) => {
+    const showModal = useCallback((type: ModalState['type'], data: any = null) => {
         playSound('modalOpen');
         setModalState({ isOpen: true, type, data });
-    };
+    }, [playSound]);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playSound('modalClose');
         setModalState({ isOpen: false, type: null, data: null });
-    };
+    }, [playSound]);
+
+    // ⚡ Bolt: Stable top-level handlers for HacksSection interactions
+    const handleActivateHack = useCallback((id: number) => {
+        const hack = HACKS_DATA.find(h => h.id === id);
+        if (hack) {
+            showModal('activation', hack);
+        }
+    }, [showModal]);
+
+    const handleAmplifyHack = useCallback((id: number) => {
+        const hack = HACKS_DATA.find(h => h.id === id);
+        if (hack) {
+            showModal('hack', hack);
+        }
+    }, [showModal]);
+
+    const playUIClickSound = useCallback(() => {
+        playSound('uiClick', 'G5', '32n');
+    }, [playSound]);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -385,9 +406,9 @@ const App = () => {
                     <HacksSection 
                         hacks={HACKS_DATA} 
                         completedHacks={completedHacks} 
-                        onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
-                        onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
-                        playUIClick={() => playSound('uiClick', 'G5', '32n')}
+                        onActivateClick={handleActivateHack}
+                        onAmplifyClick={handleAmplifyHack}
+                        playUIClick={playUIClickSound}
                     />
                     
                     {dominantArchetype && (
