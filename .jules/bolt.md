@@ -1,0 +1,3 @@
+## 2024-05-24 - [List Component Re-renders]
+**Learning:** In heavily interactive React applications where list items (e.g. `HackCard`) can individually update state (e.g. `isCompleted`), failing to stabilize the callback functions in the parent component (`App.tsx`) forces the entire list (`HacksSection`) to re-render. This happens because inline arrow functions create new reference paths every render cycle, breaking the `React.memo` shallow comparison.
+**Action:** When mapping over large datasets in React, ALWAYS wrap the child component in `React.memo` AND ensure that all prop functions passed down from the parent are stabilized using `useCallback` or declared outside the component lifecycle.
