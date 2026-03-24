@@ -1,0 +1,3 @@
+## 2023-10-27 - [Lazy Loading Modals for Bundle Reduction]
+**Learning:** Conditionally rendered components like Modals and Confetti should be code-split using `React.lazy` and `Suspense` instead of statically importing them. They unnecessarily bloat the initial bundle size even when they might not be triggered during a user's session.
+**Action:** Next time I optimize a React application, I will review conditionally rendered components (especially large ones like Modals, Confetti, large external integrations) and default to lazy-loading them unless they are required strictly above the fold or on immediate user interaction that cannot afford network delays.
