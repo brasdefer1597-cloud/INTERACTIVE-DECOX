@@ -1,3 +1,3 @@
-## 2023-10-27 - [Lazy Loading Modals for Bundle Reduction]
-**Learning:** Conditionally rendered components like Modals and Confetti should be code-split using `React.lazy` and `Suspense` instead of statically importing them. They unnecessarily bloat the initial bundle size even when they might not be triggered during a user's session.
-**Action:** Next time I optimize a React application, I will review conditionally rendered components (especially large ones like Modals, Confetti, large external integrations) and default to lazy-loading them unless they are required strictly above the fold or on immediate user interaction that cannot afford network delays.
+## 2023-10-27 - [Fix CI Chunk Memory Limits]
+**Learning:** Cloudflare Workers and Pages have strict memory limits for the build process (Rollup generation phase). Bundling massive libraries like `tone` and `@google/genai` into the main application chunk causes OOM or timeout failures, breaking CI.
+**Action:** Always verify chunk sizes using `npm run build` and apply `manualChunks` in `vite.config.ts` to separate large vendor libraries. This keeps chunk sizes < 500kB, reducing peak memory usage during build and improving caching for users.
