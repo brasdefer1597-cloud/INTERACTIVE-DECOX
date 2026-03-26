@@ -1,0 +1,3 @@
+## 2024-05-18 - Stable Event Handlers in Context-Heavy React Code
+**Learning:** When passing handlers directly to a child component inside a `.map` loop (e.g., `onClick={() => handler(id)}`), the child components will always be re-rendered even if the child is wrapped in `React.memo`, because the arrow function reference changes on every render.
+**Action:** Always create top-level stable callbacks using `useCallback` that accept IDs as arguments instead, and then pass those references down to mapped children. Then have the child execute `onClick={() => props.handler(props.id)}`.
