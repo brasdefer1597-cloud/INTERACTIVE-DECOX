@@ -10,7 +10,9 @@ interface HacksSectionProps {
     playUIClick: () => void;
 }
 
-const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => void; onAmplify: () => void; }> = ({ hack, isCompleted, onActivate, onAmplify }) => {
+// ⚡ Bolt: Wrapped in React.memo to prevent unnecessary re-renders when parent context updates.
+// Props now accept stable functions and an ID, avoiding inline arrow functions.
+const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: (id: number) => void; onAmplify: (id: number) => void; }> = React.memo(({ hack, isCompleted, onActivate, onAmplify }) => {
     return (
         <div className={`bg-gray-900/50 backdrop-blur-sm p-6 rounded-3xl border-2 transition-all duration-500 ${isCompleted ? 'border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.15)]' : 'border-white/5 hover:border-yellow-400/50 hover:shadow-2xl hover:-translate-y-2'}`}>
             <div className="flex items-start justify-between mb-6">
@@ -28,13 +30,13 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             
             <div className="grid grid-cols-2 gap-3">
                 <button 
-                    onClick={onAmplify} 
+                    onClick={() => onAmplify(hack.id)}
                     className="text-[10px] font-black uppercase tracking-widest py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all border border-white/10"
                 >
                     Amplificar
                 </button>
                 <button 
-                    onClick={onActivate} 
+                    onClick={() => onActivate(hack.id)}
                     className={`text-[10px] font-black uppercase tracking-widest py-3 rounded-xl transition-all ${isCompleted ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-lg shadow-yellow-500/20'}`}
                 >
                     {isCompleted ? 'Re-Activar' : 'Activar'}
@@ -42,9 +44,10 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: () => v
             </div>
         </div>
     );
-};
+});
 
-const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
+// ⚡ Bolt: Wrapped in React.memo to optimize re-renders.
+const HacksSection: React.FC<HacksSectionProps> = React.memo(({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
     const archetypes = Array.from(new Set(hacks.map(h => h.archetype)));
 
     // Find active combos
@@ -52,6 +55,17 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
         const ids = key.split('-').map(Number);
         return ids.every(id => completedHacks.has(id));
     });
+
+    // ⚡ Bolt: Created stable callback handlers for mapped children to maintain React.memo effectiveness
+    const handleActivate = React.useCallback((id: number) => {
+        playUIClick();
+        onActivateClick(id);
+    }, [onActivateClick, playUIClick]);
+
+    const handleAmplify = React.useCallback((id: number) => {
+        playUIClick();
+        onAmplifyClick(id);
+    }, [onAmplifyClick, playUIClick]);
 
     return (
         <section className="py-32 px-6 bg-black relative overflow-hidden">
@@ -101,8 +115,8 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
                                         key={hack.id}
                                         hack={hack}
                                         isCompleted={completedHacks.has(hack.id)}
-                                        onActivate={() => { playUIClick(); onActivateClick(hack.id); }}
-                                        onAmplify={() => { playUIClick(); onAmplifyClick(hack.id); }}
+                                        onActivate={handleActivate}
+                                        onAmplify={handleAmplify}
                                     />
                                 ))}
                             </div>
@@ -112,6 +126,6 @@ const HacksSection: React.FC<HacksSectionProps> = ({ hacks, completedHacks, onAc
             </div>
         </section>
     );
-};
+});
 
 export default HacksSection;
