@@ -123,7 +123,7 @@ const App = () => {
     }, [handleCelebration]);
 
     // --- Sound Playing Functions ---
-    const playSound = (type: keyof typeof synths.current, note?: string, duration?: string, time?: number) => {
+    const playSound = useCallback((type: keyof typeof synths.current, note?: string, duration?: string, time?: number) => {
         if (!isAudioContextStarted) return;
         const synth = synths.current[type];
         if (!synth) return;
@@ -133,7 +133,7 @@ const App = () => {
         } else if (note) {
             synth.triggerAttackRelease(note, duration || "16n", time || Tone.now());
         }
-    };
+    }, [isAudioContextStarted]);
 
     useEffect(() => {
         // --- Initialize all synths ---
@@ -238,15 +238,16 @@ const App = () => {
         }
     };
 
-    const showModal = (type: ModalState['type'], data: any = null) => {
+    // ⚡ Bolt: Wrapped showModal and hideModal in useCallback to maintain stable function references and avoid unnecessary re-renders in children that receive them as props.
+    const showModal = useCallback((type: ModalState['type'], data: any = null) => {
         playSound('modalOpen');
         setModalState({ isOpen: true, type, data });
-    };
+    }, [playSound]);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playSound('modalClose');
         setModalState({ isOpen: false, type: null, data: null });
-    };
+    }, [playSound]);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -264,6 +265,43 @@ const App = () => {
         localStorage.removeItem('completedHacks');
         setCompletedHacks(new Set());
     };
+
+    // ⚡ Bolt: Stable references for click handlers passed to HacksSection to prevent re-renders when other state changes (like scrolling or audio context).
+    const handleActivateClick = useCallback((id: number) => {
+        const hack = HACKS_DATA.find(h => h.id === id);
+        if (hack) {
+            showModal('activation', hack);
+        }
+    }, [showModal]);
+
+    const handleAmplifyClick = useCallback((id: number) => {
+        const hack = HACKS_DATA.find(h => h.id === id);
+        if (hack) {
+            showModal('hack', hack);
+        }
+    }, [showModal]);
+
+    const playUIClick = useCallback(() => {
+        playSound('uiClick', 'G5', '32n');
+    }, [playSound]);
+
+    const handleQuizSelectSound = useCallback(() => {
+        playSound('quizSelect', 'C3');
+    }, [playSound]);
+
+    const handleComboRevealSound = useCallback(() => {
+        playSound('comboReveal', 'C4', '16n');
+        playSound('comboReveal', 'E4', '16n', Tone.now() + 0.07);
+        playSound('comboReveal', 'A4', '16n', Tone.now() + 0.14);
+    }, [playSound]);
+
+    const handlePremiumServiceClick = useCallback((type: any) => {
+        showModal(type);
+    }, [showModal]);
+
+    const handleSrapModal = useCallback(() => {
+        showModal('srap');
+    }, [showModal]);
 
     const renderModalContent = () => {
         if (!modalState.isOpen) return null;
@@ -366,7 +404,7 @@ const App = () => {
                     <HowItWorks />
 
                     {!dominantArchetype ? (
-                        <ArchetypeQuiz onQuizComplete={handleQuizComplete} playSelectSound={() => playSound('quizSelect', 'C3')} />
+                        <ArchetypeQuiz onQuizComplete={handleQuizComplete} playSelectSound={handleQuizSelectSound} />
                     ) : (
                         <>
                             <ArchitectDashboard 
@@ -385,9 +423,9 @@ const App = () => {
                     <HacksSection 
                         hacks={HACKS_DATA} 
                         completedHacks={completedHacks} 
-                        onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
-                        onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
-                        playUIClick={() => playSound('uiClick', 'G5', '32n')}
+                        onActivateClick={handleActivateClick}
+                        onAmplifyClick={handleAmplifyClick}
+                        playUIClick={playUIClick}
                     />
                     
                     {dominantArchetype && (
@@ -399,17 +437,13 @@ const App = () => {
                     )}
                     
                     <GrimorioTacticoSection />
-                    <OraculoChalamandra onComboReveal={() => {
-                        playSound('comboReveal', 'C4', '16n');
-                        playSound('comboReveal', 'E4', '16n', Tone.now() + 0.07);
-                        playSound('comboReveal', 'A4', '16n', Tone.now() + 0.14);
-                    }} />
-                    <KitMagistralRPG onOpenModule={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} />
-                    <SrapRitual onActivate={() => showModal('srap')} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
+                    <OraculoChalamandra onComboReveal={handleComboRevealSound} />
+                    <KitMagistralRPG onOpenModule={handleAmplifyClick} />
+                    <SrapRitual onActivate={handleSrapModal} playUIClick={playUIClick} />
                     <SRAPMetronome />
                     <TheCodex />
                     <Testimonials />
-                    <PremiumServices onServiceClick={(type) => showModal(type)} playUIClick={() => playSound('uiClick', 'G5', '32n')} />
+                    <PremiumServices onServiceClick={handlePremiumServiceClick} playUIClick={playUIClick} />
                     <ContactForm />
                     <Faq />
                 </motion.main>
