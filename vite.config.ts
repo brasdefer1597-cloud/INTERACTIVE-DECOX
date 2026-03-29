@@ -22,5 +22,17 @@ export default defineConfig({
   },
   define: {
     'process.env': {}
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          motion: ['motion'],
+          tone: ['tone'],
+          genai: ['@google/genai']
+        }
+      }
+    }
   }
 })

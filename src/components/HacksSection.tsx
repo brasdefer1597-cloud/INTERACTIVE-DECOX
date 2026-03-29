@@ -12,7 +12,7 @@ interface HacksSectionProps {
 
 // ⚡ Bolt Optimization: Memoized HackCard to prevent re-renders when other hacks' completion states change
 // This is critical because `completedHacks` changes frequently and would otherwise re-render all cards.
-const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: (id: number) => void; onAmplify: (id: number) => void; }> = React.memo(({ hack, isCompleted, onActivate, onAmplify }) => {
+const HackCard = React.memo(({ hack, isCompleted, onActivate, onAmplify }: { hack: Hack; isCompleted: boolean; onActivate: (id: number) => void; onAmplify: (id: number) => void; }) => {
     return (
         <div className={`bg-gray-900/50 backdrop-blur-sm p-6 rounded-3xl border-2 transition-all duration-500 ${isCompleted ? 'border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.15)]' : 'border-white/5 hover:border-yellow-400/50 hover:shadow-2xl hover:-translate-y-2'}`}>
             <div className="flex items-start justify-between mb-6">
@@ -47,7 +47,7 @@ const HackCard: React.FC<{ hack: Hack; isCompleted: boolean; onActivate: (id: nu
 });
 
 // ⚡ Bolt Optimization: Memoized HacksSection to avoid unnecessary re-renders from parent App component
-const HacksSection: React.FC<HacksSectionProps> = React.memo(({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }) => {
+const HacksSection = React.memo(({ hacks, completedHacks, onActivateClick, onAmplifyClick, playUIClick }: HacksSectionProps) => {
     const archetypes = Array.from(new Set(hacks.map(h => h.archetype)));
 
     // Find active combos
