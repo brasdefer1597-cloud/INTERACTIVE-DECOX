@@ -238,15 +238,17 @@ const App = () => {
         }
     };
 
-    const showModal = (type: ModalState['type'], data: any = null) => {
+    // ⚡ Bolt Performance Optimization:
+    // Stabilized modal open/close handlers to prevent unnecessary re-renders in deep component trees.
+    const showModal = useCallback((type: ModalState['type'], data: any = null) => {
         playSound('modalOpen');
         setModalState({ isOpen: true, type, data });
-    };
+    }, []);
 
-    const hideModal = () => {
+    const hideModal = useCallback(() => {
         playSound('modalClose');
         setModalState({ isOpen: false, type: null, data: null });
-    };
+    }, []);
 
     const handleQuizComplete = useCallback((archetype: Archetype) => {
         setDominantArchetype(archetype);
@@ -257,13 +259,27 @@ const App = () => {
         }, 500);
     }, [handleCelebration]);
 
-    const handleRetakeQuiz = () => {
+    // ⚡ Bolt Performance Optimization:
+    // Stabilized global action handlers to prevent unnecessary re-renders in HacksSection and other lists.
+    const handleRetakeQuiz = useCallback(() => {
         playSound('uiClick', 'G5', '32n');
         setDominantArchetype(null);
         localStorage.removeItem('dominantArchetype');
         localStorage.removeItem('completedHacks');
         setCompletedHacks(new Set());
-    };
+    }, []);
+
+    const handleActivateHack = useCallback((id: number) => {
+        showModal('activation', HACKS_DATA.find(h => h.id === id));
+    }, [showModal]);
+
+    const handleAmplifyHack = useCallback((id: number) => {
+        showModal('hack', HACKS_DATA.find(h => h.id === id));
+    }, [showModal]);
+
+    const handlePlayUIClick = useCallback(() => {
+        playSound('uiClick', 'G5', '32n');
+    }, []);
 
     const renderModalContent = () => {
         if (!modalState.isOpen) return null;
@@ -385,9 +401,9 @@ const App = () => {
                     <HacksSection 
                         hacks={HACKS_DATA} 
                         completedHacks={completedHacks} 
-                        onActivateClick={(id) => showModal('activation', HACKS_DATA.find(h => h.id === id))} 
-                        onAmplifyClick={(id) => showModal('hack', HACKS_DATA.find(h => h.id === id))} 
-                        playUIClick={() => playSound('uiClick', 'G5', '32n')}
+                        onActivateClick={handleActivateHack}
+                        onAmplifyClick={handleAmplifyHack}
+                        playUIClick={handlePlayUIClick}
                     />
                     
                     {dominantArchetype && (
